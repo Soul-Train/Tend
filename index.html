@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Motif</title>
+<title>Tend</title>
 <link rel="icon" href="icon-180.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Motif">
+<meta name="apple-mobile-web-app-title" content="Tend">
 <meta name="theme-color" content="#F6F3EE">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@
   h2{font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:21px;margin:0}
   .hint{color:var(--soft);font-size:14px;margin:0}
 
-  .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .facts{display:grid;grid-template-columns:repeat(var(--c,3),minmax(0,1fr));gap:10px}
   .fact{background:var(--t);border-radius:18px;padding:11px;min-width:0;box-shadow:var(--sh);display:flex;flex-direction:column;gap:3px}
   .fact .ic{width:30px;height:30px;border-radius:10px;background:#FFF;display:flex;align-items:center;justify-content:center;margin-bottom:2px}
   .fact k{display:block;font-size:12px;font-weight:800;color:var(--d)}
@@ -51,6 +51,7 @@
   .fact small{display:block;font-size:11.5px;font-weight:600;color:var(--d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .presets{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;font-size:12.5px;font-weight:800;color:var(--soft)}
   .presets button{min-height:38px;padding:0 12px;border:none;border-radius:999px;background:#F3E4D3;color:#6A3E18;font-weight:800;font-size:13.5px}
+  .presets button.sym{background:#ECE7F7;color:#4A3882}
   .fact.wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:10px}
   .fact.wide .ic{margin:0;flex:none}
   .fact.wide .wm{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -162,12 +163,71 @@
     background:var(--ink);color:#FFF;padding:12px 16px;border-radius:14px;font-size:14.5px;font-weight:700;z-index:40;
     display:none;max-width:90vw;text-align:center}
   .toast.show{display:block}
+  .toggles .tl{display:block;font-size:12.5px;color:var(--soft);font-weight:800;margin-bottom:6px}
+  .toggles label{flex-direction:row;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border-radius:12px;
+    padding:0 14px;min-height:48px;margin-bottom:6px;font-size:15px;color:var(--ink);font-weight:700}
+  .toggles input{width:22px;height:22px;min-height:0;accent-color:var(--teal);flex:none}
   .queue{background:#FFF7E3;border-radius:18px;padding:14px 16px;margin-top:14px;box-shadow:var(--sh)}
   .queue b{display:block;font-weight:800}
   .queue p{margin:2px 0 0;font-size:13.5px;color:var(--soft)}
   .queue .row{display:flex;gap:8px;margin-top:10px}
   .queue .row .btn{margin-top:0;padding:12px}
   .offline{background:var(--sand);border-radius:14px;padding:10px 14px;margin-top:14px;font-size:13.5px;font-weight:700;color:var(--soft)}
+
+  .capture{margin-top:4px;padding:14px;align-items:stretch;gap:10px;border-radius:22px}
+  .caprow{display:flex;align-items:center;gap:14px}
+  .capture .mic{width:64px;height:64px;flex:none;box-shadow:0 0 0 6px var(--ring),0 6px 16px rgba(47,111,102,.3)}
+  .capture .mic.on{box-shadow:0 0 0 6px #F4D9D4,0 6px 16px rgba(176,74,62,.3)}
+  .capture .micsvg{width:28px;height:28px}
+  .capt{flex:1;min-width:0;padding-left:2px}
+  .capture .miclabel{margin-top:0;font-size:19px}
+  .capture .hint{text-align:left;margin:0;font-size:13px}
+  .capture textarea{min-height:52px}
+  .capture .btn{margin-top:0}
+  .capture .linkbtn{padding-top:2px}
+  button.fact{border:none;text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
+  button.fact:active{transform:scale(.98)}
+  #quick .inner{padding-top:10px}
+  .grab{width:40px;height:5px;border-radius:3px;background:#D9D2C6;margin:0 auto 12px}
+  .qhead{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .qhead .ic{width:40px;height:40px}
+  .qhead h2{flex:1;font-size:24px}
+  .qbody{display:flex;flex-direction:column;gap:14px}
+  .readout{border-radius:18px;padding:14px 16px;text-align:center}
+  .readout b{display:block;font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:40px;line-height:1.1}
+  .readout span{font-size:14px;font-weight:800}
+  .srow{display:flex;justify-content:space-between;font-size:14.5px;font-weight:800}
+  .srow span:last-child{color:var(--soft)}
+  .ticks{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;color:var(--soft)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:40px;background:transparent;margin:0;padding:0;border:none;min-height:0}
+  input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:5px;background:#E6E0D6}
+  input[type=range]::-moz-range-track{height:10px;border-radius:5px;background:#E6E0D6}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:var(--teal);border:4px solid #FFF;box-shadow:0 2px 6px rgba(31,36,33,.3);margin-top:-10px}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--teal);border:4px solid #FFF;box-shadow:0 2px 6px rgba(31,36,33,.3)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chips.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .chips.grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+  .chip{min-height:42px;padding:0 14px;border-radius:999px;border:1.5px solid #E1DACF;background:#FFF;color:var(--ink);font-weight:800;font-size:14px}
+  .chips.grid3 .chip,.chips.grid5 .chip,.chips.fill .chip{border-radius:14px;padding:4px 2px;line-height:1.2}
+  .chips.grid5 .chip{font-size:12.5px;min-height:50px}
+  .chips.fill .chip{flex:1}
+  .chip.on{background:var(--teal);border-color:var(--teal);color:#FFF}
+  .chip.purple.on{background:#6E55B5;border-color:#6E55B5}
+  .stepper{display:flex;align-items:center;justify-content:space-between;background:#FFF;border-radius:16px;padding:6px 8px 6px 16px;font-weight:800}
+  .stepper .sub{display:block;font-size:12px;font-weight:700;color:var(--soft)}
+  .stepper .ctl{display:flex;align-items:center;gap:4px}
+  .stepper .ctl button{width:44px;height:44px;border:none;border-radius:12px;background:#F3EFE8;font-size:22px;font-weight:800;color:var(--ink)}
+  .stepper .ctl button.plus{background:#F3E4D3;color:#6A3E18}
+  .stepper .ctl b{min-width:28px;text-align:center;font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:21px}
+  .sizes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+  .sizes button{border:2px solid transparent;background:#FFF;border-radius:14px;padding:10px 2px;display:flex;flex-direction:column;align-items:center;gap:5px}
+  .sizes button.on{border-color:#B8612C;background:#FBEBDD}
+  .sizes i{border-radius:50%;background:#E9A675;display:block}
+  .sizes b{font-size:12.5px;font-weight:800}
+  .sizes small{font-size:11px;font-weight:700;color:var(--soft)}
+  .qnote{font-size:13px;color:var(--soft);background:#FFF;border-radius:14px;padding:10px 12px}
+  .qother{width:100%;min-height:46px;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;font:inherit;font-size:16px;background:#FFF;color:var(--ink)}
+  .qmore{background:none;border:none;color:var(--teal);font-weight:800;font-size:14px;text-decoration:underline;text-underline-offset:3px;padding:12px 0 0}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
@@ -185,19 +245,22 @@
     </div>
 
     <div class="offline" id="offline" hidden>You’re offline. Voice notes get saved and sorted when you’re back, and you can always add entries by hand.</div>
-    <div class="facts" id="todayFacts" style="margin-top:14px"></div>
-
     <div class="capture">
+      <div class="caprow">
       <button class="mic" id="mic" aria-label="Start talking">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="micsvg"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
       </button>
-      <div class="miclabel" id="micLabel">How are you feeling?</div>
-      <p class="hint">Tap and just talk. “Back’s a 5, had a palm of chicken and a fist of rice at noon.”</p>
+      <div class="capt"><div class="miclabel" id="micLabel">How are you feeling?</div>
+      <p class="hint">Talk, type, or tap a tile below.</p></div>
+      </div>
       <label for="log" class="sr">What happened</label>
       <textarea id="log" placeholder="Or type it here"></textarea>
       <button class="btn" id="logBtn" disabled>Log it</button>
       <div class="under"><button class="linkbtn" data-act="manual">Add an entry by hand</button></div>
     </div>
+
+    <div class="sechead" style="margin-top:20px"><h2>Today</h2><span class="hint">Tap a tile to update</span></div>
+    <div id="todayFacts"></div>
 
     <div class="queue" id="queue" hidden></div>
 
@@ -242,6 +305,17 @@
   </div>
 </div>
 
+<!-- QUICK ENTRY SHEET -->
+<div class="sheet" id="quick" role="dialog" aria-modal="true" aria-labelledby="qTitle">
+  <div class="inner">
+    <div class="grab"></div>
+    <div class="qhead"><span class="ic" id="qIcon"></span><h2 id="qTitle"></h2><button class="x" data-act="close" aria-label="Close">&times;</button></div>
+    <div class="qbody" id="qBody"></div>
+    <button class="btn" data-act="qsave">Save</button>
+    <div class="under"><button class="qmore" data-act="qmore">More detail</button></div>
+  </div>
+</div>
+
 <!-- SETTINGS SHEET -->
 <div class="sheet" id="settings" role="dialog" aria-modal="true" aria-labelledby="sTitle">
   <div class="inner">
@@ -252,6 +326,7 @@
       <label>Gemini API key<input id="sKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your key"></label>
       <p class="note">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>.</p>
       <p class="note" id="sModels">Model: picked automatically from your key, with backups if one is busy or out of free uses.</p>
+      <div class="toggles"><span class="tl">Show on Today</span><div id="sTiles"></div></div>
       <label>Daily calorie target (sets the calendar colors)<input id="sTarget" type="number" inputmode="numeric" min="800" max="6000" step="50"></label>
       <button class="btn" data-act="savesettings">Save settings</button>
       <hr>
@@ -308,12 +383,13 @@ var ICON = {
   workout:'<path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12"/>',
   vitals:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
   note:'<path d="M5 19h4L19 9l-4-4L5 15z"/>',
+  sick:'<path d="M9 3h6M12 3v3"/><rect x="8" y="6" width="8" height="15" rx="4"/><path d="M12 12v5"/>',
   drink:'<path d="M6 4h12l-1.5 9a4.5 4.5 0 0 1-9 0z"/><path d="M12 17.5V21M8.5 21h7"/><path d="M6.8 9h10.4"/>',
   fast:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M9 3h6"/>'
 };
 var TINT = { food:["#FBEBDD","#B8612C","#7A4520"], symptom:["#FBE5E1","#B04A3E","#6E3A33"], mood:["#E1EFEC","#2F7D73","#2C5A53"],
   sleep:["#E6E7F4","#555CA8","#3F4480"], workout:["#E1EFEC","#2F7D73","#2C5A53"], vitals:["#F3E6EC","#A34A6E","#6E3350"],
-  note:["#EFEBE4","#5C625E","#474C49"], drink:["#F3E4D3","#9A5B24","#6A3E18"], fast:["#F4EFD9","#8E7A22","#5E5214"] };
+  note:["#EFEBE4","#5C625E","#474C49"], drink:["#F3E4D3","#9A5B24","#6A3E18"], sick:["#ECE7F7","#6E55B5","#4A3882"], fast:["#F4EFD9","#8E7A22","#5E5214"] };
 function icon(k, size){ var t = TINT[k] || TINT.note;
   return '<svg width="' + (size || 18) + '" height="' + (size || 18) + '" viewBox="0 0 24 24" fill="none" stroke="' + t[1] +
     '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICON[k] || ICON.note) + "</svg>"; }
@@ -324,6 +400,7 @@ var TYPES = {
   sleep:   { label:"Sleep",    fields:[["hours","Hours slept","number"],["wakeups","Wake-ups","number"],["quality","Quality 1 to 10","number"]] },
   workout: { label:"Workout",  fields:[["kind","What","text"],["minutes","Minutes","number"],["intensity","Effort","select",0,["easy","moderate","hard"]]] },
   drink:   { label:"Drink",    fields:[["item","What","text",1],["count","How many","number"],["std","Standard drinks (total)","number"],["kcal","Calories (est.)","number"]] },
+  sick:    { label:"Sick",     fields:[["level","How sick","select",0,["early signs","mild","sick","rough"]],["temp","Temp (°F, optional)","number"],["symptoms","Symptoms","text",1]] },
   fast:    { label:"Fast",     fields:[["hours","Hours fasted","number"],["note","Note","text"]] },
   vitals:  { label:"Tracker",  fields:[["steps","Steps","number"],["rhr","Resting heart rate","number"]] },
   note:    { label:"Note",     fields:[["text","Note","text",1]] }
@@ -335,6 +412,7 @@ function titleOf(e){
     case "mood": return "Mood" + (num(e.rating) != null ? ", " + num(e.rating) + "/10" : "");
     case "sleep": return "Slept " + (fmtHours(num(e.hours)) || "");
     case "workout": return cap(e.kind || "Workout");
+    case "sick": return cap(e.level || "Sick") + (e.level === "early signs" ? "" : ", sick");
     case "fast": return "Fasted " + (num(e.hours) != null ? fmtHours(num(e.hours)) : "");
     case "drink": return num(e.count) > 1 ? num(e.count) + " " + (e.item || "drinks") : cap(e.item || "Drink");
     case "vitals": return "Tracker numbers";
@@ -347,8 +425,9 @@ function subOf(e){
     case "food": if (e.portion) p.push(e.portion); if (num(e.kcal) != null) p.push("~" + num(e.kcal) + " kcal"); break;
     case "symptom": if (e.note) p.push(e.note); break;
     case "mood": if (e.note) p.push(e.note); break;
-    case "sleep": if (num(e.wakeups) != null) p.push("woke " + num(e.wakeups) + (num(e.wakeups) === 1 ? " time" : " times"));
+    case "sleep": if (num(e.wakeups) != null) p.push(num(e.wakeups) === 0 ? "slept through" : "woke " + num(e.wakeups) + (num(e.wakeups) === 1 ? " time" : " times"));
       if (num(e.quality) != null) p.push("quality " + num(e.quality) + "/10"); break;
+    case "sick": if (e.symptoms) p.push(e.symptoms); if (num(e.temp) != null) p.push(num(e.temp) + "°F"); break;
     case "fast": if (e.note) p.push(e.note); else p.push("Ended at this time"); break;
     case "drink": if (num(e.std) != null) p.push("~" + num(e.std) + " standard drink" + (num(e.std) === 1 ? "" : "s"));
       if (num(e.kcal) != null) p.push("~" + num(e.kcal) + " kcal"); break;
@@ -388,8 +467,11 @@ function dayStats(date, fm){
   var L = entries.filter(function(e){ return e.date === date; });
   function of(t){ return L.filter(function(e){ return e.type === t; }); }
   function rated(list, f){ return list.filter(function(e){ return num(e[f]) != null; }); }
-  var food = of("food"), sym = rated(of("symptom"), "rating"), mood = rated(of("mood"), "rating"),
+  var food = of("food").filter(function(e){ return !e.marker; }), sym = rated(of("symptom"), "rating"), mood = rated(of("mood"), "rating"),
       sl = rated(of("sleep"), "hours"), wk = of("workout"), vit = of("vitals"), dr = of("drink");
+  var LV = ["early signs", "mild", "sick", "rough"], sk = of("sick");
+  var sickLv = sk.reduce(function(a, e){ return Math.max(a, LV.indexOf(e.level) + 1 || 1); }, 0);
+  var sickSym = sk.map(function(e){ return e.symptoms; }).filter(Boolean).join(", ");
   var cal = food.concat(dr.filter(function(e){ return num(e.kcal) != null; }));
   var std = Math.round(dr.reduce(function(a, e){ return a + (num(e.std) != null ? num(e.std) : (num(e.count) || 1)); }, 0) * 10) / 10;
   var worst = sym.reduce(function(a, e){ return !a || num(e.rating) > num(a.rating) ? e : a; }, null);
@@ -397,6 +479,7 @@ function dayStats(date, fm){
   return {
     count: L.length, list: L,
     kcal: cal.length ? cal.reduce(function(s, e){ return s + (num(e.kcal) || 0); }, 0) : null,
+    sick: sickLv, sickSym: sickSym,
     drinks: std, drinkNames: dr.map(function(e){ return e.item; }).filter(Boolean).join(", "),
     pain: worst ? num(worst.rating) : null, painArea: worst ? worst.area : "",
     mood: mood.length ? Math.round(mood.reduce(function(s, e){ return s + num(e.rating); }, 0) / mood.length * 10) / 10 : null,
@@ -412,30 +495,48 @@ function dayStats(date, fm){
 
 function tier(std){ return std <= 0 ? 0 : std <= 1.5 ? 1 : std <= 3.5 ? 2 : 3; }
 var TIER = ["Dry day", "Light", "Moderate", "Heavy"];
+var SICK = ["Healthy", "Early signs", "Mild", "Sick", "Rough"];
 function factsHTML(s, isToday){
-  function f(label, val, sub, k){ var t = TINT[k];
-    return '<div class="fact' + (val == null ? " off" : "") + '" style="--t:' + t[0] + ';--d:' + t[2] + '"><span class="ic">' + icon(k) + "</span><k>" + label + "</k><b>" +
-    (val == null ? "&ndash;" : val) + "</b><small>" + esc(sub || (val == null ? "Not logged" : "")) + "</small></div>"; }
+  var tag = isToday ? "button" : "div";
+  function f(label, val, sub, k, q){ var t = TINT[k];
+    return "<" + tag + ' class="fact' + (val == null ? " off" : "") + '" style="--t:' + t[0] + ';--d:' + t[2] + '"' +
+      (isToday ? ' data-quick="' + q + '" aria-label="' + label + '. Tap to update."' : "") + '><span class="ic">' + icon(k) + "</span><k>" + label + "</k><b>" +
+    (val == null ? "&ndash;" : val) + "</b><small>" + esc(sub || (val == null ? (isToday ? "Tap to add" : "Not logged") : "")) + "</small></" + tag + ">"; }
   var fastVal = null, fastSub = "";
   if (s.fast) { fastVal = fmtHours(s.fast.h); fastSub = (s.fast.stated ? "Logged, ended " : "Ended ") + fmtTime(hm(new Date(s.fast.end))); }
   else if (isToday) {
     var m = meals(), last = m[m.length-1], now = Date.now();
-    if (last && now > last.end) {
-      var d = new Date(last.end);
+    if (last && now > last.end && now - last.end < 48 * 36e5) {
+      var d = new Date(last.end), yd = new Date(); yd.setDate(yd.getDate() - 1);
       fastVal = fmtHours(Math.floor((now - last.end) / 36e5 * 2) / 2) || "0h";
-      fastSub = "Since " + fmtTime(hm(d)) + (ymd(d) === ymd(new Date()) ? "" : " yesterday");
+      fastSub = "Since " + fmtTime(hm(d)) + (ymd(d) === ymd(new Date()) ? "" : ymd(d) === ymd(yd) ? " yesterday" :
+        " " + d.toLocaleDateString("en-US", { weekday:"short" }));
     }
   }
-  return f("Pain", s.pain != null ? s.pain + "<i>/10</i>" : null, s.painArea ? cap(s.painArea) : "", "symptom") +
-    f("Mood", s.mood != null ? s.mood + "<i>/10</i>" : null, " ", "mood") +
-    f("Sleep", s.sleep != null ? esc(fmtHours(s.sleep)) : null, s.sleep != null ? (s.wakeups ? "Woke " + s.wakeups + "x" : "Slept through") : "", "sleep") +
-    f("Calories", s.kcal != null ? Math.round(s.kcal).toLocaleString("en-US") : null, s.kcal != null ? "of " + Number(settings.kcalTarget).toLocaleString("en-US") : "", "food") +
-    f("Fasted", fastVal ? esc(fastVal) : null, fastSub, "fast") +
-    f("Workout", s.workout ? (s.workoutMin ? s.workoutMin + "<i>m</i>" : "Done") : null, s.workout ? cap(s.workoutKind) : (s.steps != null ? s.steps.toLocaleString("en-US") + " steps" : ""), "workout") +
-    '<div class="fact wide" style="--t:' + TINT.drink[0] + ';--d:' + TINT.drink[2] + '"><span class="ic">' + icon("drink") + "</span>" +
+  var small = {
+    sleep:   function(){ return f("Sleep", s.sleep != null ? esc(fmtHours(s.sleep)) : null, s.sleep != null ? (s.wakeups ? "Woke " + s.wakeups + "x" : "Slept through") : "", "sleep", "sleep"); },
+    kcal:    function(){ return f("Calories", s.kcal != null ? Math.round(s.kcal).toLocaleString("en-US") : null, s.kcal != null ? "of " + Number(settings.kcalTarget).toLocaleString("en-US") : "", "food", "kcal"); },
+    fast:    function(){ return f("Fasted", fastVal ? esc(fastVal) : null, fastSub, "fast", "fast"); },
+    workout: function(){ return f("Workout", s.workout ? (s.workoutMin ? s.workoutMin + "<i>m</i>" : "Done") : null, s.workout ? cap(s.workoutKind) : (s.steps != null ? s.steps.toLocaleString("en-US") + " steps" : ""), "workout", "workout"); },
+    pain:    function(){ return f("Pain", s.pain != null ? s.pain + "<i>/10</i>" : null, s.painArea ? cap(s.painArea) : "", "symptom", "pain"); },
+    mood:    function(){ return f("Mood", s.mood != null ? s.mood + "<i>/10</i>" : null, " ", "mood", "mood"); }
+  };
+  var shown = TILE_ORDER.filter(function(k){ return small[k] && tileOn(k); });
+  var html = shown.map(function(k){ return small[k](); }).join("");
+  function wide(k, q, label){ return "<" + tag + ' class="fact wide" style="--t:' + TINT[k][0] + ';--d:' + TINT[k][2] + '"' +
+    (isToday ? ' data-quick="' + q + '" aria-label="' + label + '. Tap to update."' : "") + '><span class="ic">' + icon(k) + "</span>"; }
+  if (tileOn("alcohol")) html += wide("drink", "alcohol", "Alcohol") +
     '<span class="wm"><k>Alcohol</k><small>' + esc(s.drinks ? (s.drinkNames ? cap(s.drinkNames) : "") : "Nothing logged counts as dry") + "</small></span>" +
-    "<b>" + (s.drinks ? TIER[tier(s.drinks)] + " <i>" + s.drinks + " std</i>" : "Dry") + "</b></div>";
+    "<b>" + (s.drinks ? TIER[tier(s.drinks)] + " <i>" + s.drinks + " std</i>" : "Dry") + "</b></" + tag + ">";
+  if (tileOn("sick") && (s.sick || isToday)) html += wide("sick", "sick", "Feeling sick") +
+    '<span class="wm"><k>Feeling sick</k><small>' + esc(s.sick ? cap(s.sickSym) : "Tap if something’s coming on") + "</small></span><b>" + SICK[s.sick] + "</b></" + tag + ">";
+  var n = shown.length, cols = n === 3 || n >= 5 ? 3 : 2;
+  return '<div class="facts" style="--c:' + cols + '">' + html + "</div>";
 }
+var TILE_ORDER = ["sleep", "kcal", "fast", "workout", "pain", "mood"];
+var TILE_LABEL = { sleep:"Sleep", kcal:"Calories", fast:"Fasted", workout:"Workout", pain:"Pain", mood:"Mood", alcohol:"Alcohol", sick:"Feeling sick" };
+var TILE_DEFAULT = { sleep:true, kcal:true, fast:true, workout:true, pain:false, mood:false, alcohol:true, sick:true };
+function tileOn(k){ var t = settings.tiles || {}; return k in t ? !!t[k] : TILE_DEFAULT[k]; }
 function entryHTML(e){
   var t = TYPES[e.type] || TYPES.note;
   var k = TYPES[e.type] ? e.type : "note";
@@ -465,7 +566,8 @@ var PAL = {
   sleep:  ["#E6E7F4","#C3C6E8","#9197D1","#555CA8","#3A4088"],
   fast:   ["#F4EFD9","#E7DBA4","#CDB861","#8E7A22","#6B5C12"],
   workout:["#E1EFEC","#B8DAD3","#7FBDB1","#2F7D73","#1F5C54"],
-  alcohol:["#E4EEE8","#F3DCC0","#D99A5B","#8A4A1C"]
+  alcohol:["#E4EEE8","#F3DCC0","#D99A5B","#8A4A1C"],
+  sick:["#E4EEE8","#E3DCF4","#BBA9E6","#7C5FC4","#4E3490"]
 };
 var METRICS = {
   kcal: { label:"Calories", val:function(s){ return s.kcal; },
@@ -479,6 +581,7 @@ var METRICS = {
     bin:function(v){ return v < 5.5 ? 0 : v < 6.5 ? 1 : v < 7 ? 2 : v < 7.5 ? 3 : 4; }, lo:"Under 5.5h", hi:"7.5h+" },
   fast: { label:"Fasting", val:function(s){ return s.fast ? s.fast.h : null; },
     bin:function(v){ return v < 12 ? 0 : v < 13 ? 1 : v < 14 ? 2 : v < 16 ? 3 : 4; }, lo:"Under 12h", hi:"16h+" },
+  sick: { label:"Sick", val:function(s){ return s.sick; }, bin:function(v){ return v; }, lo:"Healthy", hi:"Rough", daily:true },
   alcohol: { label:"Alcohol", val:function(s){ return s.drinks; }, bin:tier, lo:"Dry", hi:"Heavy", daily:true },
   workout: { label:"Workout", val:function(s){ return s.workout ? Math.max(1, s.workoutMin) : null; },
     bin:function(v){ return v < 20 ? 2 : v < 45 ? 3 : 4; }, lo:"Short", hi:"45+ min" }
@@ -515,7 +618,7 @@ function renderCal(){
 function renderDay(fm){
   var s = dayStats(selDate, fm), isToday = selDate === ymd(new Date());
   $("#dayPanel").innerHTML = "<h2>" + esc(longDate(selDate)) + (isToday ? " (today)" : "") + "</h2>" +
-    (s.count ? '<div class="facts">' + factsHTML(s, isToday) + "</div>" + sortByTime(s.list).map(entryHTML).join("")
+    (s.count ? factsHTML(s, isToday) + sortByTime(s.list).map(entryHTML).join("")
              : '<p class="hint" style="margin-bottom:4px">Nothing logged for this day.</p>') +
     '<button class="btn ghost" data-act="addday">Add to this day</button>';
 }
@@ -557,6 +660,7 @@ function openConfirm(list, said, mode){
   $("#cSaid").hidden = !said; $("#cSaid").textContent = said ? "\u201C" + said + "\u201D" : "";
   renderCards(); openSheet("#confirm");
 }
+var SYMS = ["Hot breath", "Scratchy throat", "Stuffy", "Runny nose", "Achy", "Tired", "Fever", "Cough"];
 var PRESETS = [["Whiskey", "whiskey, neat", 1, 105], ["Double", "whiskey, double pour", 2, 210], ["Cocktail", "cocktail", 1.75, 220],
   ["Beer", "beer", 1, 150], ["Wine", "wine", 1, 125]];
 function cardHTML(e, i){
@@ -576,6 +680,8 @@ function cardHTML(e, i){
     (pendingMode === "edit" ? "" : '<button class="x" data-rm="' + i + '" aria-label="Remove this entry">&times;</button>') + "</div>" +
     '<div class="fields"><label>Date<input type="date" data-i="' + i + '" data-f="date" value="' + esc(e.date) + '"></label>' +
     '<label>Time<input type="time" data-i="' + i + '" data-f="time" value="' + esc(e.time) + '"></label>' + fields + "</div>" +
+    (e.type === "sick" ? '<div class="presets"><span>Quick add:</span>' + SYMS.map(function(x, j){
+      return '<button type="button" class="sym" data-i="' + i + '" data-sym="' + j + '">' + x + "</button>"; }).join("") + "</div>" : "") +
     (e.type === "drink" ? '<div class="presets"><span>Quick add:</span>' + PRESETS.map(function(pr, j){
       return '<button type="button" data-i="' + i + '" data-preset="' + j + '">' + pr[0] + "</button>"; }).join("") + "</div>" : "") +
     (e.question ? '<div class="q">' + esc(e.question) + "</div>" : "") + "</div>";
@@ -623,6 +729,7 @@ function buildPrompt(text, when){
     '- workout: kind, minutes, intensity ("easy", "moderate" or "hard").',
     "- mood: rating (1-10) for how they feel overall, note.",
     "- vitals: steps, rhr (resting heart rate), for numbers read off a fitness tracker. Tracker sleep goes in a sleep entry.",
+    '- sick: for feeling ill overall (cold, flu, bug), not pain in one body part. level: "early signs" (first hints, e.g. breath through the nose feels hot, a scratchy throat), "mild", "sick" or "rough"; symptoms (short list); temp (number, °F, only if they gave one). "My breath feels hot" or "air out of my nose feels hot" = early signs, symptom "hot breath".',
     '- fast: hours (number), when they say they fasted or went without food for a stretch (e.g. "fasted 24 hours since dinner yesterday" = 24). Use the time the fast ended as "time", or the current time if it is still going. Only add a food entry for the meal that broke it if they describe what they ate.',
     "- note: text, for anything health related that fits nowhere else.",
     'Portion guide: palm of meat or fish = about 4 oz cooked; fist of rice, pasta, cereal or fruit = about 1 cup; cupped hand of nuts, chips or snacks = about 1 oz; thumb of butter, oil, cheese or peanut butter = about 1 tbsp; a dinner plate is about 10 inches, so "half a plate" of pasta = about 2 cups. Count cooking fat and sauces when mentioned.',
@@ -730,6 +837,204 @@ function parseWithGemini(text, when){
   });
 }
 
+
+/* ---------- quick entry sheets ---------- */
+var Q = null;
+var SIZES = [["Snack", 200, 14], ["Light", 400, 20], ["Regular", 650, 26], ["Big", 900, 32], ["Feast", 1200, 38]];
+var DRK = [["Whiskey", "Neat pour, 1 drink", "whiskey, neat", 1, 105], ["Double", "Heavy pour, 2 drinks", "whiskey, double pour", 2, 210],
+  ["Cocktail", "About 1.75 drinks", "cocktail", 1.75, 220], ["Beer", "12 oz, 1 drink", "beer", 1, 150], ["Wine", "5 oz, 1 drink", "wine", 1, 125]];
+var REST = ["", "Wrecked", "Wrecked", "Groggy", "Groggy", "Okay", "Okay", "Decent", "Good", "Great", "Great"];
+var PAINW = ["No pain", "Barely there", "Mild", "Mild", "Noticeable", "Moderate", "Moderate", "Bad", "Bad", "Severe", "Worst"];
+var PAINC = ["#F3EFE8", "#FBE5E1", "#FBE5E1", "#EFC1BA", "#EFC1BA", "#E08D82", "#E08D82", "#B04A3E", "#B04A3E", "#8A2A20", "#8A2A20"];
+var MOODW = ["", "Rough", "Rough", "Low", "Low", "Okay", "Okay", "Good", "Good", "Great", "Great"];
+var AREAS = ["Lower back", "Upper back", "Neck", "Shoulder", "Knee", "Head", "Other"];
+var FEELS = ["Dull", "Sharp", "Stiff", "Throbbing", "Burning"];
+var KINDS = ["Walk", "Lift", "Run", "Bike", "Dance", "Stretch", "Yoga", "Sport", "Other"];
+var QSYMS = ["Hot breath", "Scratchy throat", "Stuffy", "Runny nose", "Achy", "Tired", "Fever", "Cough", "Other"];
+var SICKLV = ["early signs", "mild", "sick", "rough"];
+function clockM(m){ m = ((Math.round(m) % 1440) + 1440) % 1440; var h = Math.floor(m / 60);
+  return (h % 12 || 12) + ":" + pad(m % 60) + " " + (h >= 12 ? "PM" : "AM"); }
+function durM(mins){ var h = Math.floor(mins / 60), m = Math.round(mins % 60); return m ? h + "h " + m + "m" : h + "h"; }
+function nowM(){ var n = new Date(); return n.getHours() * 60 + n.getMinutes(); }
+function hhmm(m){ m = ((Math.round(m) % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ":" + pad(m % 60); }
+function todays(type){ var t = ymd(new Date()); return entries.filter(function(e){ return e.date === t && e.type === type; }); }
+function chipsH(key, items, cur, cls, multi, color){
+  return '<div class="chips ' + (cls || "") + '">' + items.map(function(x){
+    var on = multi ? cur.indexOf(x) >= 0 : cur === x;
+    return '<button type="button" class="chip' + (color ? " " + color : "") + (on ? " on" : "") + '" aria-pressed="' + on + '" data-q' +
+      (multi ? "toggle" : "pick") + '="' + key + '" data-v="' + esc(x) + '">' + esc(x) + "</button>";
+  }).join("") + "</div>";
+}
+function rangeH(key, min, max, step, val, label, out, ticks){
+  return '<div><div class="srow"><span>' + label + '</span><span data-out="' + out + '"></span></div>' +
+    '<input type="range" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '" data-qset="' + key + '" aria-label="' + label + '">' +
+    (ticks ? '<div class="ticks">' + ticks.map(function(t){ return "<span>" + t + "</span>"; }).join("") + "</div>" : "") + "</div>";
+}
+function otherH(key, val, ph){
+  return '<input class="qother" type="text" data-qtext="' + key + '" value="' + esc(val || "") + '" placeholder="' + ph + '" aria-label="' + ph + '">';
+}
+function readout(bg, color, bigOut, smallOut, smallFirst){
+  var big = '<b data-out="' + bigOut + '"></b>', small = '<span style="color:' + color + '" data-out="' + smallOut + '"></span>';
+  return '<div class="readout" style="background:' + bg + '">' + (smallFirst ? small + big : big + small) + "</div>";
+}
+
+var QUICK = {
+  sleep: { title: "Last night’s sleep", k: "sleep",
+    init: function(){
+      var e = todays("sleep")[0], wake = 405, hrs = 7.75, q = { wakeups: 0, rested: 6 };
+      if (e) { var t = (e.time || "06:45").split(":"); wake = +t[0] * 60 + +t[1]; hrs = num(e.hours) || hrs;
+        q.wakeups = num(e.wakeups) || 0; q.rested = num(e.quality) || 6; q.id = e.id; }
+      q.wake = Math.min(720, Math.max(240, Math.round(wake / 15) * 15));
+      q.bed = Math.min(480, Math.max(0, Math.round((1440 - hrs * 60 + q.wake - 1080) / 15) * 15));
+      return q; },
+    body: function(q){
+      return readout("#E6E7F4", "#3F4480", "tot", "span") +
+        rangeH("bed", 0, 480, 15, q.bed, "Went to bed", "bed", ["6 PM", "10 PM", "2 AM"]) +
+        rangeH("wake", 240, 720, 15, q.wake, "Woke up", "wake", ["4 AM", "8 AM", "Noon"]) +
+        '<div class="stepper"><span>Woke up during the night</span><span class="ctl">' +
+        '<button type="button" data-qstep="wakeups" data-v="-1" aria-label="Fewer wake-ups">&minus;</button><b>' + q.wakeups +
+        '</b><button type="button" data-qstep="wakeups" data-v="1" aria-label="More wake-ups">+</button></span></div>' +
+        rangeH("rested", 1, 10, 1, q.rested, "How rested?", "rest"); },
+    outs: function(q){ var bed = 1080 + q.bed, tot = 1440 - bed + q.wake;
+      return { tot: durM(tot), span: clockM(bed) + " to " + clockM(q.wake), bed: clockM(bed), wake: clockM(q.wake),
+        rest: q.rested + "/10, " + REST[q.rested].toLowerCase() }; },
+    save: function(q){ var tot = 1440 - (1080 + q.bed) + q.wake;
+      return [{ id: q.id || uid(), type: "sleep", date: ymd(new Date()), time: hhmm(q.wake),
+        hours: Math.round(tot / 60 * 100) / 100, wakeups: q.wakeups, quality: q.rested }]; } },
+
+  kcal: { title: "Log a meal", k: "food",
+    init: function(){ var m = Math.min(1380, Math.max(300, Math.round(nowM() / 15) * 15));
+      return { meal: m < 630 ? "Breakfast" : m < 900 ? "Lunch" : m < 1020 ? "Snack" : "Dinner", time: m, size: 2 }; },
+    body: function(q){
+      return chipsH("meal", ["Breakfast", "Lunch", "Dinner", "Snack"], q.meal) +
+        rangeH("time", 300, 1380, 15, q.time, "About when?", "time") +
+        '<div class="srow"><span>How big?</span><span></span></div><div class="sizes">' + SIZES.map(function(z, i){
+          return '<button type="button" class="' + (i === q.size ? "on" : "") + '" aria-pressed="' + (i === q.size) + '" data-qpick="size" data-v="' + i +
+            '"><i style="width:' + z[2] + "px;height:" + z[2] + 'px"></i><b>' + z[0] + "</b><small>~" + z[1] + "</small></button>"; }).join("") + "</div>" +
+        '<div class="qnote">For a closer number, describe the meal with the mic instead. “Palm of salmon, fist of rice.”</div>'; },
+    outs: function(q){ return { time: clockM(q.time) }; },
+    save: function(q){ var z = SIZES[+q.size];
+      return [{ id: uid(), type: "food", date: ymd(new Date()), time: hhmm(q.time), item: q.meal, portion: z[0].toLowerCase() + " meal", kcal: z[1] }]; } },
+
+  fast: { title: "Fasting", k: "fast",
+    init: function(){ var m = meals(), last = m[m.length - 1], h = 14;
+      if (last && Date.now() > last.end) h = Math.min(36, Math.round((Date.now() - last.end) / 36e5 * 2) / 2);
+      return { ago: h, mode: "still" }; },
+    body: function(q){
+      return readout("#F4EFD9", "#5E5214", "tot", "head", true) +
+        rangeH("ago", 0, 36, 0.5, q.ago, "Last ate", "last", ["Just now", "18h ago", "36h ago"]) +
+        '<div class="chips fill">' + [["still", "Still fasting"], ["broke", "Just broke it"]].map(function(c){
+          return '<button type="button" class="chip' + (q.mode === c[0] ? " on" : "") + '" aria-pressed="' + (q.mode === c[0]) +
+            '" data-qpick="mode" data-v="' + c[0] + '">' + c[1] + "</button>"; }).join("") + "</div>"; },
+    outs: function(q){ var d = new Date(Date.now() - q.ago * 36e5), yd = new Date(); yd.setDate(yd.getDate() - 1);
+      var day = ymd(d) === ymd(new Date()) ? "Today " : ymd(d) === ymd(yd) ? "Yesterday " : d.toLocaleDateString("en-US", { weekday: "short" }) + " ";
+      return { head: q.mode === "still" ? "Fasting for" : "Fasted for", tot: durM(q.ago * 60), last: day + fmtTime(hm(d)) }; },
+    save: function(q){ var d = new Date(Date.now() - q.ago * 36e5), n = new Date();
+      if (q.mode === "still") return [{ id: uid(), type: "food", marker: true, date: ymd(d), time: hm(d), item: "Last meal", portion: "time only" }];
+      return [{ id: uid(), type: "fast", date: ymd(n), time: hm(n), hours: q.ago }]; } },
+
+  workout: { title: "Workout", k: "workout",
+    init: function(){ return { kind: "Walk", other: "", minutes: 30, effort: "Easy" }; },
+    body: function(q){
+      return chipsH("kind", KINDS, q.kind, "grid3") + (q.kind === "Other" ? otherH("other", q.other, "What did you do?") : "") +
+        readout("#E1EFEC", "#2C5A53", "min", "minw") +
+        rangeH("minutes", 0, 120, 5, q.minutes, "How long?", "min2", ["0", "1 hr", "2 hr"]) +
+        chipsH("effort", ["Easy", "Moderate", "Hard"], q.effort, "fill"); },
+    outs: function(q){ return { min: q.minutes, minw: "minutes", min2: q.minutes + " min" }; },
+    save: function(q){ var n = new Date();
+      return [{ id: uid(), type: "workout", date: ymd(n), time: hm(n), kind: (q.kind === "Other" ? (q.other.trim() || "workout") : q.kind).toLowerCase(),
+        minutes: q.minutes, intensity: q.effort.toLowerCase() }]; } },
+
+  pain: { title: "Pain", k: "symptom",
+    init: function(){ return { area: "Lower back", other: "", pain: 4, feel: "Stiff" }; },
+    body: function(q){
+      return chipsH("area", AREAS, q.area) + (q.area === "Other" ? otherH("other", q.other, "Where does it hurt?") : "") +
+        '<div data-out="box"></div>' + rangeH("pain", 0, 10, 1, q.pain, "How bad?", "pw", ["None", "Moderate", "Worst"]) +
+        chipsH("feel", FEELS, q.feel); },
+    outs: function(q){ return { pw: PAINW[q.pain], box: '<div class="readout" style="background:' + PAINC[q.pain] + ";color:" + (q.pain >= 7 ? "#FFF" : "#1F2421") +
+      '"><b>' + q.pain + '<span style="font-family:Nunito,sans-serif;font-size:16px;font-weight:800"> / 10</span></b><span>' + PAINW[q.pain] + "</span></div>" }; },
+    save: function(q){ var n = new Date();
+      return [{ id: uid(), type: "symptom", date: ymd(n), time: hm(n), area: (q.area === "Other" ? (q.other.trim() || "other") : q.area).toLowerCase(),
+        rating: q.pain, note: q.feel.toLowerCase() }]; } },
+
+  mood: { title: "Mood", k: "mood",
+    init: function(){ return { mood: 7 }; },
+    body: function(q){ return readout("#E1EFEC", "#2C5A53", "w", "n") +
+      rangeH("mood", 1, 10, 1, q.mood, "How are you feeling?", "n2", ["Rough", "Okay", "Great"]); },
+    outs: function(q){ return { w: MOODW[q.mood], n: q.mood + " out of 10", n2: q.mood + "/10" }; },
+    save: function(q){ var n = new Date(); return [{ id: uid(), type: "mood", date: ymd(n), time: hm(n), rating: q.mood, note: MOODW[q.mood].toLowerCase() }]; } },
+
+  alcohol: { title: "Drinks today", k: "drink",
+    init: function(){ return { dr: [0, 0, 0, 0, 0], have: dayStats(ymd(new Date())).drinks || 0 }; },
+    body: function(q){
+      return readout("#F3E4D3", "#6A3E18", "tw", "ts") + DRK.map(function(d, i){
+        return '<div class="stepper"><span>' + d[0] + '<span class="sub">' + d[1] + '</span></span><span class="ctl">' +
+          '<button type="button" data-qdr="' + i + '" data-v="-1" aria-label="One less ' + d[0].toLowerCase() + '">&minus;</button><b>' + q.dr[i] +
+          '</b><button type="button" class="plus" data-qdr="' + i + '" data-v="1" aria-label="One more ' + d[0].toLowerCase() + '">+</button></span></div>'; }).join(""); },
+    outs: function(q){ var add = DRK.reduce(function(a, d, i){ return a + d[3] * q.dr[i]; }, 0), std = Math.round((q.have + add) * 100) / 100;
+      return { tw: TIER[tier(std)], ts: std ? std + " standard drinks today" + (q.have ? ", " + q.have + " already logged" : "") : "Nothing logged counts as dry" }; },
+    save: function(q){ var n = new Date(), out = [];
+      DRK.forEach(function(d, i){ if (q.dr[i]) out.push({ id: uid(), type: "drink", date: ymd(n), time: hm(n), item: d[2], count: q.dr[i],
+        std: Math.round(d[3] * q.dr[i] * 100) / 100, kcal: d[4] * q.dr[i] }); });
+      return out; } },
+
+  sick: { title: "Feeling sick?", k: "sick",
+    init: function(){
+      var e = todays("sick")[0], q = { level: 1, syms: ["Hot breath"], other: "" };
+      if (e) {
+        q.id = e.id; q.level = Math.max(0, SICKLV.indexOf(e.level) + 1);
+        var parts = String(e.symptoms || "").split(/,\s*/).filter(Boolean), known = QSYMS.map(function(x){ return x.toLowerCase(); });
+        q.syms = parts.filter(function(p){ return known.indexOf(p.toLowerCase()) >= 0; }).map(function(p){ return QSYMS[known.indexOf(p.toLowerCase())]; });
+        var extra = parts.filter(function(p){ return known.indexOf(p.toLowerCase()) < 0; });
+        if (extra.length) { q.syms.push("Other"); q.other = extra.join(", "); }
+      }
+      return q; },
+    body: function(q){
+      return '<div class="chips grid5">' + SICK.map(function(x, i){
+          return '<button type="button" class="chip purple' + (i === q.level ? " on" : "") + '" aria-pressed="' + (i === q.level) +
+            '" data-qpick="level" data-v="' + i + '">' + x + "</button>"; }).join("") + "</div>" +
+        '<div class="srow"><span>What’s going on?</span><span></span></div>' + chipsH("syms", QSYMS, q.syms, "", true, "purple") +
+        (q.syms.indexOf("Other") >= 0 ? otherH("other", q.other, "Describe it") : ""); },
+    outs: function(){ return {}; },
+    save: function(q){ var n = new Date();
+      if (+q.level === 0) { if (q.id) entries = entries.filter(function(x){ return x.id !== q.id; }); return []; }
+      var list = q.syms.filter(function(x){ return x !== "Other"; }).map(function(x){ return x.toLowerCase(); });
+      if (q.syms.indexOf("Other") >= 0 && q.other.trim()) list.push(q.other.trim());
+      return [{ id: q.id || uid(), type: "sick", date: ymd(n), time: hm(n), level: SICKLV[q.level - 1], symptoms: list.join(", ") }]; } }
+};
+
+function openQuick(key){
+  var def = QUICK[key]; if (!def) return;
+  Q = { key: key, v: def.init() };
+  var t = TINT[def.k] || TINT.note;
+  $("#qIcon").style.background = t[0]; $("#qIcon").innerHTML = icon(def.k, 20);
+  $("#qTitle").textContent = def.title;
+  renderQuick(); openSheet("#quick");
+}
+function renderQuick(){ $("#qBody").innerHTML = QUICK[Q.key].body(Q.v); quickOuts(); }
+function quickOuts(){ var o = QUICK[Q.key].outs(Q.v);
+  document.querySelectorAll("#qBody [data-out]").forEach(function(el){ var k = el.dataset.out; if (k in o) el.innerHTML = o[k]; }); }
+function saveQuick(){
+  var list = QUICK[Q.key].save(Q.v);
+  list.forEach(function(e){ var i = entries.findIndex(function(x){ return x.id === e.id; }); if (i >= 0) entries[i] = e; else entries.push(e); });
+  if (!store(K_E, entries)) return;
+  closeSheets(); renderAll(); toast(list.length ? "Saved" : "Updated");
+}
+$("#qBody").addEventListener("input", function(ev){ var el = ev.target;
+  if (el.dataset.qset) { Q.v[el.dataset.qset] = +el.value; quickOuts(); }
+  if (el.dataset.qtext) Q.v[el.dataset.qtext] = el.value; });
+$("#qBody").addEventListener("click", function(ev){
+  var b = ev.target.closest("button"); if (!b) return;
+  var d = b.dataset, v = Q.v;
+  if (d.qpick) { v[d.qpick] = isNaN(+d.v) ? d.v : +d.v; renderQuick(); }
+  else if (d.qtoggle) { var a = v[d.qtoggle], i = a.indexOf(d.v); if (i >= 0) a.splice(i, 1); else a.push(d.v); renderQuick(); }
+  else if (d.qstep) { v[d.qstep] = Math.max(0, (v[d.qstep] || 0) + +d.v); renderQuick(); }
+  else if (d.qdr != null) { v.dr[+d.qdr] = Math.max(0, v.dr[+d.qdr] + +d.v); renderQuick(); }
+  else return;
+  ev.stopPropagation();
+  var other = $("#qBody .qother"); if (other && (d.v === "Other")) other.focus();
+});
+
 /* ---------- waiting-to-be-sorted queue ---------- */
 var sortingQueueId = null;
 function enqueue(text){
@@ -766,6 +1071,21 @@ function dropQueued(id){ queue = queue.filter(function(q){ return q.id !== id; }
 
 /* ---------- capture ---------- */
 var SR = window.SpeechRecognition || window.webkitSpeechRecognition, rec = null, listening = false, baseText = "";
+function norm(t){ return t.toLowerCase().replace(/[^a-z0-9' ]+/g, " ").replace(/\s+/g, " ").trim(); }
+function stitch(acc, piece){
+  piece = String(piece || "").replace(/\s+/g, " ").trim();
+  if (!piece) return acc;
+  if (!acc) return piece;
+  var a = norm(acc), b = norm(piece);
+  if (b.indexOf(a) === 0) return piece;            // piece is the whole thing so far
+  if (a.indexOf(b) >= 0) return acc;                // piece is a repeat of something we have
+  var aw = a.split(" "), bw = b.split(" "), k = Math.min(aw.length, bw.length);
+  for (; k > 0; k--) {                              // overlap: end of acc == start of piece
+    if (aw.slice(-k).join(" ") === bw.slice(0, k).join(" ")) break;
+  }
+  if (k > 0) return acc + " " + piece.split(" ").slice(k).join(" ");
+  return acc + " " + piece;
+}
 function updateLogBtn(){ $("#logBtn").disabled = !$("#log").value.trim(); }
 function setMic(){
   $("#mic").classList.toggle("on", listening);
@@ -778,11 +1098,12 @@ $("#mic").addEventListener("click", function(){
   rec = new SR(); rec.lang = "en-US"; rec.continuous = true; rec.interimResults = true;
   baseText = $("#log").value.trim();
   rec.onresult = function(ev){
-    var fin = "", inter = "";
-    for (var i = 0; i < ev.results.length; i++) {
-      if (ev.results[i].isFinal) fin += ev.results[i][0].transcript; else inter += ev.results[i][0].transcript;
-    }
-    $("#log").value = (baseText ? baseText + " " : "") + (fin + inter).trim(); updateLogBtn();
+    /* iPhone Safari often sends each result as the whole sentence so far, or repeats a
+       finished chunk. Stitch pieces together, replacing instead of appending when a new
+       piece already contains what we have. */
+    var acc = "";
+    for (var i = 0; i < ev.results.length; i++) acc = stitch(acc, ev.results[i][0].transcript);
+    $("#log").value = (baseText ? baseText + " " : "") + acc; updateLogBtn();
   };
   rec.onerror = function(ev){
     if (ev.error === "not-allowed" || ev.error === "service-not-allowed") toast("The mic is blocked here. Use the mic on your keyboard instead.", 4500);
@@ -811,19 +1132,25 @@ $("#logBtn").addEventListener("click", function(){
 });
 
 /* ---------- settings ---------- */
-function fillSettings(){ $("#sName").value = settings.name || ""; $("#sKey").value = settings.key; $("#sModels").textContent = modelNote(); $("#sTarget").value = settings.kcalTarget; }
+function fillTiles(){
+  $("#sTiles").innerHTML = TILE_ORDER.concat(["alcohol", "sick"]).map(function(k){
+    return '<label>' + TILE_LABEL[k] + '<input type="checkbox" data-tile="' + k + '"' + (tileOn(k) ? " checked" : "") + "></label>"; }).join("");
+}
+function fillSettings(){ fillTiles(); $("#sName").value = settings.name || ""; $("#sKey").value = settings.key; $("#sModels").textContent = modelNote(); $("#sTarget").value = settings.kcalTarget; }
 function saveSettings(){
   settings.name = $("#sName").value.trim();
   var newKey = $("#sKey").value.trim();
   if (newKey !== settings.key) { try { localStorage.removeItem(K_M); } catch(e){} }
   settings.key = newKey;
+  var tiles = {}; document.querySelectorAll("#sTiles input").forEach(function(c){ tiles[c.dataset.tile] = c.checked; });
+  settings.tiles = tiles;
   settings.kcalTarget = Math.max(800, Math.min(6000, num($("#sTarget").value) || 2200));
   if (store(K_S, settings)) { closeSheets(); renderAll(); toast("Saved settings"); }
 }
 function exportData(){
-  var blob = new Blob([JSON.stringify({ app:"motif", version:1, exported:new Date().toISOString(), entries:entries }, null, 1)], { type:"application/json" });
+  var blob = new Blob([JSON.stringify({ app:"tend", version:1, exported:new Date().toISOString(), entries:entries }, null, 1)], { type:"application/json" });
   var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  a.download = "motif-backup-" + ymd(new Date()) + ".json"; document.body.appendChild(a); a.click();
+  a.download = "tend-backup-" + ymd(new Date()) + ".json"; document.body.appendChild(a); a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
 }
 $("#importFile").addEventListener("change", function(ev){
@@ -837,7 +1164,7 @@ $("#importFile").addEventListener("change", function(ev){
       var added = list.filter(function(e){ return e && e.id && e.type && e.date && !have[e.id]; });
       entries = entries.concat(added); store(K_E, entries); closeSheets(); renderAll();
       toast("Imported " + added.length + (added.length === 1 ? " entry" : " entries"));
-    } catch(e){ toast("That file is not a Motif backup."); }
+    } catch(e){ toast("That file is not a Tend backup."); }
     ev.target.value = "";
   };
   r.readAsText(file);
@@ -846,12 +1173,17 @@ $("#importFile").addEventListener("change", function(ev){
 /* ---------- clicks ---------- */
 document.addEventListener("click", function(ev){
   var el = ev.target.closest("button, .sheet"); if (!el) return;
+  if (el.dataset && el.dataset.quick) return openQuick(el.dataset.quick);
   if (el.classList.contains("sheet")) { if (ev.target === el) closeSheets(); return; }
   var d = el.dataset;
   if (d.tab) return showTab(d.tab);
   if (d.metric) { metric = d.metric; return renderCal(); }
   if (d.day) { selDate = d.day; return renderCal(); }
   if (d.rm != null) { pending.splice(+d.rm, 1); return renderCards(); }
+  if (d.sym != null) { var se = pending[+d.i], word = SYMS[+d.sym].toLowerCase(), cur = se.symptoms ? String(se.symptoms) : "";
+    if (cur.toLowerCase().indexOf(word) < 0) se.symptoms = cur ? cur + ", " + word : word;
+    if (!se.level) se.level = word === "hot breath" ? "early signs" : "mild";
+    return renderCards(); }
   if (d.preset != null) { var pe = pending[+d.i], pr = PRESETS[+d.preset];
     if (pe.item === pr[1]) { pe.count = (num(pe.count) || 1) + 1; pe.std = Math.round(((num(pe.std) || 0) + pr[2]) * 100) / 100; pe.kcal = (num(pe.kcal) || 0) + pr[3]; }
     else { pe.item = pr[1]; pe.count = 1; pe.std = pr[2]; pe.kcal = pr[3]; }
@@ -862,6 +1194,9 @@ document.addEventListener("click", function(ev){
     case "settings": fillSettings(); openSheet("#settings"); break;
     case "close": closeSheets(); sortingQueueId = null; break;
     case "sortq": sortNext(); break;
+    case "qsave": saveQuick(); break;
+    case "qmore": { var ql = QUICK[Q.key].save(JSON.parse(JSON.stringify(Q.v))); closeSheets();
+      openConfirm(ql.length ? ql : [blank(QUICK[Q.key].k)], "", "new"); } break;
     case "handq": { var it = queue[0]; if (!it) break; var d0 = new Date(it.at);
       var bl = blank("food", ymd(d0)); bl.time = hm(d0);
       openConfirm([bl], it.text, "new"); sortingQueueId = it.id; } break;
