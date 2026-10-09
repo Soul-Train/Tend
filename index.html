@@ -336,7 +336,7 @@
 <div class="sheet" id="quick" role="dialog" aria-modal="true" aria-labelledby="qTitle">
   <div class="inner">
     <div class="grab"></div>
-    <div class="qhead"><span class="ic" id="qIcon"></span><h2 id="qTitle"></h2><button class="x" data-act="close" aria-label="Close">&times;</button></div>
+    <div class="qhead"><span class="ic" id="qIcon"></span><h2 id="qTitle"></h2><button class="x" data-act="qcancel" aria-label="Cancel">&times;</button></div>
     <div class="qbody" id="qBody"></div>
     <div class="logged" id="qLogged" hidden></div>
     <button class="btn" data-act="qsave" id="qSave">Save</button>
@@ -374,7 +374,7 @@
 "use strict";
 
 /* ---------- storage ---------- */
-var APP_VERSION = "1.2";
+var APP_VERSION = "1.3";
 var K_E = "daybook.entries.v1", K_S = "daybook.settings.v1", K_Q = "daybook.queue.v1", K_M = "daybook.models.v1";
 function load(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; }
@@ -1098,8 +1098,8 @@ function openQuick(key){
   var inst = !!def.instant;
   $("#qSave").hidden = inst; $("#qMoreRow").hidden = inst; $("#qLogged").hidden = !inst;
   if (inst) { Q.v.id = uid(); autoSave();
-    $("#qLogged").innerHTML = "<span>&#10003; Logged at " + fmtTime(hhmm(Q.v.time)) + ". Tap any detail to add it.</span>" +
-      '<button type="button" class="undo" data-act="qundo">Undo</button><button type="button" class="done" data-act="close">Done</button>'; }
+    $("#qLogged").innerHTML = "<span>&#10003; Logged at " + fmtTime(hhmm(Q.v.time)) + ". Tap &times; to cancel it.</span>" +
+      '<button type="button" class="done" data-act="close">Done</button>'; }
   renderQuick(); openSheet("#quick");
 }
 function autoSave(){
@@ -1303,6 +1303,9 @@ document.addEventListener("click", function(ev){
     case "close": closeSheets(); sortingQueueId = null; break;
     case "sortq": sortNext(); break;
     case "qsave": saveQuick(); break;
+    case "qcancel": if (Q && QUICK[Q.key].instant && !Q.removed) { Q.removed = true;
+        entries = entries.filter(function(x){ return x.id !== Q.v.id; }); store(K_E, entries); closeSheets(); renderAll(); toast("Canceled"); }
+      else closeSheets(); break;
     case "qundo": if (Q) { Q.removed = true; entries = entries.filter(function(x){ return x.id !== Q.v.id; }); store(K_E, entries); }
       closeSheets(); renderAll(); toast("Removed"); break;
     case "qmore": { var ql = QUICK[Q.key].save(JSON.parse(JSON.stringify(Q.v))); closeSheets();
