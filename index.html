@@ -32,7 +32,7 @@
   .serif{font-family:"Young Serif",Georgia,serif;font-weight:400}
 
   main{max-width:500px;margin:0 auto;padding:20px 18px calc(110px + env(safe-area-inset-bottom))}
-  .top{display:flex;align-items:flex-start;gap:10px;margin-bottom:18px}
+  .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
   .top .who{flex:1;min-width:0}
   .tag{color:var(--soft);font-size:14px;font-weight:700;margin:0 0 2px}
   h1{font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:30px;line-height:1.15;margin:0;letter-spacing:-.3px}
@@ -237,6 +237,10 @@
   .bbtn .bl{flex:1;min-width:0;display:flex;flex-direction:column;font-size:13px;font-weight:800;color:var(--d)}
   .bbtn .bl em{font-style:normal;font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:16px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .bbtn b{font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:22px}
+  .top .who{display:flex;align-items:baseline;gap:10px;min-width:0;white-space:nowrap}
+  .today{font-family:"Young Serif",Georgia,serif;font-size:20px;line-height:1.2}
+  .temp{min-width:0;overflow:hidden;text-overflow:ellipsis;border:none;background:none;padding:0;font:inherit;font-size:14px;font-weight:700;color:var(--soft);cursor:pointer}
+  .temp b{font-weight:800;color:var(--ink)}
   .ver{align-self:center;font-size:11px;font-weight:700;color:#8A8F8B;letter-spacing:.2px}
   .shades{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
   .shades button{height:64px;border-radius:12px;border:1.5px solid rgba(31,36,33,.12);padding:0}
@@ -264,8 +268,8 @@
   <section id="vToday">
     <div class="top">
       <div class="who">
-        <p class="tag" id="todayDate"></p>
-        <h1 id="greet">Hello</h1>
+        <span class="today" id="todayDate"></span>
+        <button type="button" class="temp" id="temp" data-act="settings" hidden></button>
       </div>
       <span class="ver" id="ver"></span>
       <button class="gear" data-act="settings" aria-label="Settings">&#9881;</button>
@@ -350,7 +354,7 @@
     <div class="sheethead"><h2 id="sTitle">Settings</h2><button class="x" data-act="close" aria-label="Close">&times;</button></div>
     <div class="set">
       <p class="note">Your log is stored only in this browser on this phone. When you tap Log it, just those words go to Gemini to be sorted into entries.</p>
-      <label>Your name (for the greeting)<input id="sName" type="text" autocomplete="off"></label>
+      <label>ZIP code (for the outdoor temperature)<input id="sZip" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="e.g. 20164"></label>
       <label>Gemini API key<input id="sKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your key"></label>
       <p class="note">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>.</p>
       <p class="note" id="sModels">Model: picked automatically from your key, with backups if one is busy or out of free uses.</p>
@@ -374,7 +378,7 @@
 "use strict";
 
 /* ---------- storage ---------- */
-var APP_VERSION = "1.3";
+var APP_VERSION = "1.4";
 var K_E = "daybook.entries.v1", K_S = "daybook.settings.v1", K_Q = "daybook.queue.v1", K_M = "daybook.models.v1";
 function load(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; }
@@ -588,9 +592,7 @@ function sortByTime(list){ return list.slice().sort(function(a, b){ return (a.ti
 /* ---------- today ---------- */
 function renderToday(){
   var now = new Date(), d = ymd(now), s = dayStats(d);
-  $("#todayDate").textContent = now.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric" });
-  var hr = now.getHours(), part = hr < 12 ? "Good morning" : hr < 17 ? "Good afternoon" : "Good evening";
-  $("#greet").textContent = part + (settings.name ? ", " + settings.name : "");
+  $("#todayDate").textContent = now.toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" });
   $("#todayFacts").innerHTML = factsHTML(s, true);
   $("#todayCount").textContent = s.count ? s.count + (s.count === 1 ? " entry" : " entries") : "";
   $("#todayList").innerHTML = s.count ? sortByTime(s.list).map(entryHTML).join("")
@@ -883,6 +885,36 @@ function parseWithGemini(text, when){
   });
 }
 
+
+/* ---------- outdoor temperature (ZIP -> place via zippopotam.us, weather via open-meteo; both free, no key) ---------- */
+var K_W = "daybook.weather.v1";
+var WX = [[0, "Clear"], [3, "Cloudy"], [48, "Fog"], [57, "Drizzle"], [67, "Rain"], [77, "Snow"], [82, "Showers"], [86, "Snow"], [99, "Storms"]];
+function wxWord(c){ for (var i = 0; i < WX.length; i++) if (c <= WX[i][0]) return c === 1 || c === 2 ? "Partly cloudy" : WX[i][1]; return ""; }
+function showWeather(){
+  var w = load(K_W, null), el = $("#temp");
+  if (!settings.zip) { el.hidden = false; el.innerHTML = "Add ZIP for weather"; return; }
+  if (!w || w.zip !== settings.zip) { el.hidden = true; return; }
+  el.hidden = false; el.setAttribute("aria-label", "Outdoor temperature " + w.t + " degrees, " + wxWord(w.code));
+  el.innerHTML = "<b>" + w.t + "°</b> " + wxWord(w.code) + (Date.now() - w.at > 3 * 36e5 ? " (earlier)" : "");
+}
+function loadWeather(force){
+  showWeather();
+  if (!settings.zip || navigator.onLine === false) return;
+  var w = load(K_W, null);
+  if (!force && w && w.zip === settings.zip && Date.now() - w.at < 30 * 60000) return;
+  var geo = settings.geo && settings.geo.zip === settings.zip ? Promise.resolve(settings.geo) :
+    fetch("https://api.zippopotam.us/us/" + settings.zip).then(function(r){ if (!r.ok) throw new Error("zip"); return r.json(); }).then(function(d){
+      var pl = d.places[0]; settings.geo = { zip: settings.zip, lat: +pl.latitude, lon: +pl.longitude, place: pl["place name"] };
+      store(K_S, settings); return settings.geo; });
+  geo.then(function(g){
+    return fetch("https://api.open-meteo.com/v1/forecast?latitude=" + g.lat + "&longitude=" + g.lon +
+      "&current=temperature_2m,weather_code&temperature_unit=fahrenheit").then(function(r){ return r.json(); });
+  }).then(function(d){
+    if (!d.current) return;
+    store(K_W, { zip: settings.zip, t: Math.round(d.current.temperature_2m), code: d.current.weather_code, at: Date.now() });
+    showWeather();
+  }).catch(function(e){ if (e && e.message === "zip") toast("Couldn’t find that ZIP code. Check it in Settings."); });
+}
 
 /* ---------- quick entry sheets ---------- */
 var Q = null;
@@ -1244,9 +1276,9 @@ function fillTiles(){
   $("#sTiles").innerHTML = TILE_ORDER.concat(["alcohol", "sick", "bathroom"]).map(function(k){
     return '<label>' + TILE_LABEL[k] + '<input type="checkbox" data-tile="' + k + '"' + (tileOn(k) ? " checked" : "") + "></label>"; }).join("");
 }
-function fillSettings(){ fillTiles(); $("#sName").value = settings.name || ""; $("#sKey").value = settings.key; $("#sModels").textContent = modelNote(); $("#sTarget").value = settings.kcalTarget; }
+function fillSettings(){ fillTiles(); $("#sZip").value = settings.zip || ""; $("#sKey").value = settings.key; $("#sModels").textContent = modelNote(); $("#sTarget").value = settings.kcalTarget; }
 function saveSettings(){
-  settings.name = $("#sName").value.trim();
+  var z = $("#sZip").value.replace(/\D/g, "").slice(0, 5); if (z !== (settings.zip || "")) { settings.zip = z; settings.geo = null; setTimeout(function(){ loadWeather(true); }, 0); }
   var newKey = $("#sKey").value.trim();
   if (newKey !== settings.key) { try { localStorage.removeItem(K_M); } catch(e){} }
   settings.key = newKey;
@@ -1336,10 +1368,12 @@ document.addEventListener("click", function(ev){
 $("#cards").addEventListener("input", onCardInput);
 $("#cards").addEventListener("change", onCardInput);
 document.addEventListener("keydown", function(ev){ if (ev.key === "Escape") closeSheets(); });
-document.addEventListener("visibilitychange", function(){ if (!document.hidden) renderAll(); });
+document.addEventListener("visibilitychange", function(){ if (!document.hidden) { renderAll(); loadWeather(); } });
 setInterval(function(){ if (!document.hidden && !$("#vToday").hidden) renderToday(); }, 60000);
 
 $("#ver").textContent = "v" + APP_VERSION;
+loadWeather();
+setInterval(function(){ if (!document.hidden) loadWeather(); }, 10 * 60000);
 renderToday(); renderQueue();
 window.addEventListener("online", function(){ renderQueue();
   if (queue.length && settings.key) toast("Back online. " + queue.length + (queue.length === 1 ? " note is" : " notes are") + " ready to sort.", 4500); });

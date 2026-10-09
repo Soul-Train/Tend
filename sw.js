@@ -1,6 +1,6 @@
 /* Tend offline support: keeps the app itself on the phone so it opens with no signal.
    Gemini calls are never cached; those need the internet. */
-var CACHE = "tend-v1.3";
+var CACHE = "tend-v1.4";
 var SHELL = ["./", "index.html", "manifest.json", "icon-180.png", "icon-512.png"];
 
 self.addEventListener("install", function(e){
@@ -13,7 +13,7 @@ self.addEventListener("activate", function(e){
 });
 self.addEventListener("fetch", function(e){
   var req = e.request, url = new URL(req.url);
-  if (req.method !== "GET" || url.hostname === "generativelanguage.googleapis.com") return;
+  if (req.method !== "GET" || url.hostname !== self.location.hostname && !/fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) return;
   // The app page: try the network first so updates arrive, fall back to the saved copy offline.
   if (req.mode === "navigate" || url.pathname.endsWith("/index.html")) {
     e.respondWith(fetch(req).then(function(res){
