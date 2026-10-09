@@ -378,7 +378,7 @@
 "use strict";
 
 /* ---------- storage ---------- */
-var APP_VERSION = "1.4";
+var APP_VERSION = "1.5";
 var K_E = "daybook.entries.v1", K_S = "daybook.settings.v1", K_Q = "daybook.queue.v1", K_M = "daybook.models.v1";
 function load(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; }
