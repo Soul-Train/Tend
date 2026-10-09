@@ -1,6 +1,6 @@
-/* Motif offline support: keeps the app itself on the phone so it opens with no signal.
+/* Tend offline support: keeps the app itself on the phone so it opens with no signal.
    Gemini calls are never cached; those need the internet. */
-var CACHE = "motif-v1";
+var CACHE = "tend-v2";
 var SHELL = ["./", "index.html", "manifest.json", "icon-180.png", "icon-512.png"];
 
 self.addEventListener("install", function(e){
