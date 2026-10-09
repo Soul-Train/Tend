@@ -249,6 +249,11 @@
   .bristol button small{font-size:12.5px;color:var(--soft);font-weight:600}
   .bristol button.on{background:#557896;border-color:#557896;color:#FFF}
   .bristol button.on b,.bristol button.on small{color:#FFF}
+  .logged{display:flex;align-items:center;gap:10px;background:#E1EFEC;border-radius:16px;padding:10px 10px 10px 14px;margin-top:16px;font-size:14px;font-weight:800;color:#2C5A53}
+  .logged span{flex:1}
+  .logged button{border:none;border-radius:12px;min-height:42px;padding:0 14px;font-weight:800;font-size:14px}
+  .logged .undo{background:#FFF;color:var(--flag)}
+  .logged .done{background:var(--teal);color:#FFF}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
@@ -333,8 +338,9 @@
     <div class="grab"></div>
     <div class="qhead"><span class="ic" id="qIcon"></span><h2 id="qTitle"></h2><button class="x" data-act="close" aria-label="Close">&times;</button></div>
     <div class="qbody" id="qBody"></div>
-    <button class="btn" data-act="qsave">Save</button>
-    <div class="under"><button class="qmore" data-act="qmore">More detail</button></div>
+    <div class="logged" id="qLogged" hidden></div>
+    <button class="btn" data-act="qsave" id="qSave">Save</button>
+    <div class="under" id="qMoreRow"><button class="qmore" data-act="qmore">More detail</button></div>
   </div>
 </div>
 
@@ -368,7 +374,7 @@
 "use strict";
 
 /* ---------- storage ---------- */
-var APP_VERSION = "1.1";
+var APP_VERSION = "1.2";
 var K_E = "daybook.entries.v1", K_S = "daybook.settings.v1", K_Q = "daybook.queue.v1", K_M = "daybook.models.v1";
 function load(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; }
@@ -1028,7 +1034,7 @@ var QUICK = {
         std: Math.round(d[3] * q.dr[i] * 100) / 100, kcal: d[4] * q.dr[i] }); });
       return out; } },
 
-  pee: { title: "Number 1", k: "pee",
+  pee: { title: "Number 1", k: "pee", instant: true,
     init: function(){ return { shade: -1, flags: [], other: "", time: Math.round(nowM() / 15) * 15, note: "" }; },
     body: function(q){
       return '<div class="srow"><span>Color (optional)</span><span data-out="sw"></span></div>' +
@@ -1040,10 +1046,10 @@ var QUICK = {
         (q.flags.indexOf("Other") >= 0 ? otherH("other", q.other, "Describe it") : "") +
         rangeH("time", 0, 1425, 15, q.time, "When?", "time") + otherH("note", q.note, "Note (optional)"); },
     outs: function(q){ return { time: clockM(q.time), sw: q.shade >= 0 ? URINE[q.shade][1] + ": " + URINE[q.shade][2].split(",")[0].toLowerCase() : "" }; },
-    save: function(q){ var e = { id: uid(), type: "bathroom", kind: "#1", date: ymd(new Date()), time: hhmm(q.time) };
+    save: function(q){ var e = { id: q.id || uid(), type: "bathroom", kind: "#1", date: ymd(new Date()), time: hhmm(q.time) };
       if (q.shade >= 0) e.shade = q.shade + 1; var f = flagList(q); if (f) e.flags = f; if (q.note.trim()) e.note = q.note.trim();
       return [e]; } },
-  poop: { title: "Number 2", k: "poop",
+  poop: { title: "Number 2", k: "poop", instant: true,
     init: function(){ return { bristol: 0, flags: [], other: "", time: Math.round(nowM() / 15) * 15, note: "" }; },
     body: function(q){
       return '<div class="srow"><span>Type (Bristol scale)</span><span data-out="bw"></span></div>' +
@@ -1055,7 +1061,7 @@ var QUICK = {
         (q.flags.indexOf("Blood") >= 0 ? '<div class="q">Blood is worth mentioning to a doctor, especially if it happens more than once.</div>' : "") +
         rangeH("time", 0, 1425, 15, q.time, "When?", "time") + otherH("note", q.note, "Note (optional)"); },
     outs: function(q){ return { time: clockM(q.time), bw: q.bristol ? BRISTOLW[q.bristol] : "" }; },
-    save: function(q){ var e = { id: uid(), type: "bathroom", kind: "#2", date: ymd(new Date()), time: hhmm(q.time) };
+    save: function(q){ var e = { id: q.id || uid(), type: "bathroom", kind: "#2", date: ymd(new Date()), time: hhmm(q.time) };
       if (q.bristol) e.bristol = q.bristol; var f = flagList(q); if (f) e.flags = f; if (q.note.trim()) e.note = q.note.trim();
       return [e]; } },
   sick: { title: "Feeling sick?", k: "sick",
@@ -1089,7 +1095,18 @@ function openQuick(key){
   var t = TINT[def.k] || TINT.note;
   $("#qIcon").style.background = t[0]; $("#qIcon").innerHTML = icon(def.k, 20);
   $("#qTitle").textContent = def.title;
+  var inst = !!def.instant;
+  $("#qSave").hidden = inst; $("#qMoreRow").hidden = inst; $("#qLogged").hidden = !inst;
+  if (inst) { Q.v.id = uid(); autoSave();
+    $("#qLogged").innerHTML = "<span>&#10003; Logged at " + fmtTime(hhmm(Q.v.time)) + ". Tap any detail to add it.</span>" +
+      '<button type="button" class="undo" data-act="qundo">Undo</button><button type="button" class="done" data-act="close">Done</button>'; }
   renderQuick(); openSheet("#quick");
+}
+function autoSave(){
+  if (!Q || !QUICK[Q.key].instant || Q.removed) return;
+  var e = QUICK[Q.key].save(Q.v)[0], i = entries.findIndex(function(x){ return x.id === e.id; });
+  if (i >= 0) entries[i] = e; else entries.push(e);
+  store(K_E, entries); renderToday();
 }
 function renderQuick(){ $("#qBody").innerHTML = QUICK[Q.key].body(Q.v); quickOuts(); }
 function quickOuts(){ var o = QUICK[Q.key].outs(Q.v);
@@ -1102,7 +1119,8 @@ function saveQuick(){
 }
 $("#qBody").addEventListener("input", function(ev){ var el = ev.target;
   if (el.dataset.qset) { Q.v[el.dataset.qset] = +el.value; quickOuts(); }
-  if (el.dataset.qtext) Q.v[el.dataset.qtext] = el.value; });
+  if (el.dataset.qtext) Q.v[el.dataset.qtext] = el.value;
+  autoSave(); });
 $("#qBody").addEventListener("click", function(ev){
   var b = ev.target.closest("button"); if (!b) return;
   var d = b.dataset, v = Q.v;
@@ -1111,7 +1129,7 @@ $("#qBody").addEventListener("click", function(ev){
   else if (d.qstep) { v[d.qstep] = Math.max(0, (v[d.qstep] || 0) + +d.v); renderQuick(); }
   else if (d.qdr != null) { v.dr[+d.qdr] = Math.max(0, v.dr[+d.qdr] + +d.v); renderQuick(); }
   else return;
-  ev.stopPropagation();
+  ev.stopPropagation(); autoSave();
   var other = $("#qBody [data-qtext=other]"); if (other && (d.v === "Other")) other.focus();
 });
 
@@ -1285,6 +1303,8 @@ document.addEventListener("click", function(ev){
     case "close": closeSheets(); sortingQueueId = null; break;
     case "sortq": sortNext(); break;
     case "qsave": saveQuick(); break;
+    case "qundo": if (Q) { Q.removed = true; entries = entries.filter(function(x){ return x.id !== Q.v.id; }); store(K_E, entries); }
+      closeSheets(); renderAll(); toast("Removed"); break;
     case "qmore": { var ql = QUICK[Q.key].save(JSON.parse(JSON.stringify(Q.v))); closeSheets();
       openConfirm(ql.length ? ql : [blank(QUICK[Q.key].k)], "", "new"); } break;
     case "handq": { var it = queue[0]; if (!it) break; var d0 = new Date(it.at);
