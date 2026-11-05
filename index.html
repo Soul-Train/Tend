@@ -371,7 +371,7 @@
     <div class="sheethead"><h2 id="sTitle">Settings</h2><button class="x" data-act="close" aria-label="Close">&times;</button></div>
     <div class="set">
       <p class="note">Your log is stored only in this browser on this phone. When you tap Log it, just those words go to Gemini to be sorted into entries.</p>
-      <label>ZIP code (for the outdoor temperature)<input id="sZip" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="e.g. 20164"></label>
+      <label>ZIP code (for the outdoor temperature)<input id="sZip" type="text" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="e.g. 20164"></label>
       <label>Gemini API key<input id="sKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your key"></label>
       <p class="note">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>.</p>
       <p class="note" id="sModels">Model: picked automatically from your key, with backups if one is busy or out of free uses.</p>
@@ -395,7 +395,7 @@
 "use strict";
 
 /* ---------- storage ---------- */
-var APP_VERSION = "1.6";
+var APP_VERSION = "1.7";
 var K_E = "daybook.entries.v1", K_S = "daybook.settings.v1", K_Q = "daybook.queue.v1", K_M = "daybook.models.v1";
 function load(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; }
@@ -1491,6 +1491,17 @@ document.addEventListener("keydown", function(ev){ if (ev.key === "Escape") clos
 document.addEventListener("visibilitychange", function(){ if (!document.hidden) { renderAll(); loadWeather(); } });
 setInterval(function(){ if (!document.hidden && !$("#vToday").hidden) renderToday(); }, 60000);
 
+/* Tell the phone this is a log, not a checkout: no card, address or password prompts on any field. */
+function noAutofill(root){
+  (root.querySelectorAll ? root.querySelectorAll("input, textarea, select") : []).forEach(function(el){
+    if (el.type === "file" || el.type === "range" || el.type === "checkbox") return;
+    el.setAttribute("autocomplete", "off"); el.setAttribute("autocapitalize", el.type === "text" || el.tagName === "TEXTAREA" ? "sentences" : "off");
+    el.setAttribute("data-lpignore", "true"); el.setAttribute("data-1p-ignore", "true"); el.setAttribute("data-form-type", "other");
+  });
+}
+noAutofill(document);
+new MutationObserver(function(ms){ ms.forEach(function(m){ m.addedNodes.forEach(function(n){ if (n.nodeType === 1) { noAutofill(n); if (/^(INPUT|TEXTAREA|SELECT)$/.test(n.tagName)) noAutofill({ querySelectorAll: function(){ return [n]; } }); } }); }); })
+  .observe(document.body, { childList: true, subtree: true });
 $("#ver").textContent = "v" + APP_VERSION;
 loadWeather();
 setInterval(function(){ if (!document.hidden) loadWeather(); }, 10 * 60000);
