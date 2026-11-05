@@ -162,7 +162,9 @@
   .toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);
     background:var(--ink);color:#FFF;padding:12px 16px;border-radius:14px;font-size:14.5px;font-weight:700;z-index:40;
     display:none;max-width:90vw;text-align:center}
-  .toast.show{display:block}
+  .toast.show{display:flex;align-items:center;gap:12px}
+  .toast{pointer-events:none}
+  .toast button{pointer-events:auto;border:none;background:#FFF;color:var(--ink);font:inherit;font-weight:800;font-size:14px;border-radius:10px;min-height:36px;padding:0 14px}
   .toggles .tl{display:block;font-size:12.5px;color:var(--soft);font-weight:800;margin-bottom:6px}
   .toggles label{flex-direction:row;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border-radius:12px;
     padding:0 14px;min-height:48px;margin-bottom:6px;font-size:15px;color:var(--ink);font-weight:700}
@@ -245,19 +247,35 @@
   .shades{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
   .shades button{height:64px;border-radius:12px;border:1.5px solid rgba(31,36,33,.12);padding:0}
   .shades button.on{border:3px solid var(--ink);box-shadow:0 0 0 2px #FFF inset}
-  .bristol{display:flex;flex-direction:column;gap:6px}
+  .bristol{display:flex;flex-direction:column;gap:4px}
   .bristol button{display:grid;grid-template-columns:30px 92px 1fr;align-items:center;gap:8px;text-align:left;border:1.5px solid #E1DACF;
-    background:#FFF;border-radius:14px;padding:8px 12px;min-height:46px;font:inherit;color:var(--ink)}
+    background:#FFF;border-radius:12px;padding:4px 12px;min-height:38px;font:inherit;color:var(--ink)}
   .bristol button b{font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:20px;color:#557896}
   .bristol button span{font-weight:800;font-size:14px}
   .bristol button small{font-size:12.5px;color:var(--soft);font-weight:600}
   .bristol button.on{background:#557896;border-color:#557896;color:#FFF}
   .bristol button.on b,.bristol button.on small{color:#FFF}
-  .logged{display:flex;align-items:center;gap:10px;background:#E1EFEC;border-radius:16px;padding:10px 10px 10px 14px;margin-top:16px;font-size:14px;font-weight:800;color:#2C5A53}
-  .logged span{flex:1}
-  .logged button{border:none;border-radius:12px;min-height:42px;padding:0 14px;font-weight:800;font-size:14px}
-  .logged .undo{background:#FFF;color:var(--flag)}
-  .logged .done{background:var(--teal);color:#FFF}
+  .savetop{border:none;background:var(--teal);color:#FFF;font:inherit;font-weight:800;font-size:15px;border-radius:12px;min-height:44px;padding:0 20px;flex:none}
+  .savetop:disabled{opacity:.45}
+  .deltop{border:none;background:#F7E4E0;color:var(--flag);font:inherit;font-weight:800;font-size:14px;border-radius:12px;min-height:44px;padding:0 14px;flex:none}
+  .qhead,.sheethead{position:sticky;top:0;z-index:3;background:var(--bg);padding:6px 0 10px;margin:0 0 6px}
+  .qhead h2,.sheethead h2{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .shades button{height:48px}
+  .queue .row .btn.ghost.danger{color:var(--flag)}
+  /* tiles that support hold-and-drag */
+  [data-quick]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+  .holding{transform:scale(.97);filter:brightness(.96)}
+  #holdLayer{position:fixed;inset:0;z-index:30;background:rgba(31,36,33,.28);pointer-events:none}
+  .hpanel{pointer-events:auto;position:absolute;background:var(--bg);border-radius:22px;padding:12px;box-shadow:0 10px 34px rgba(31,36,33,.35)}
+  .hlabel{font-weight:800;font-size:14.5px;text-align:center;min-height:36px;display:flex;align-items:center;justify-content:center;padding:0 4px 8px;line-height:1.25}
+  .hopts{display:grid;gap:6px}
+  .hopt{min-height:50px;border-radius:14px;background:#FFF;border:2px solid #E6E0D6;display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:13px;text-align:center;line-height:1.15;padding:2px;color:var(--ink);transition:transform .08s}
+  .hopt i{display:block;width:100%;height:42px;border-radius:10px}
+  .hopt b{font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:22px;color:#557896}
+  .hopt.hot{transform:scale(1.14);border-color:var(--ink);background:#FFF;box-shadow:0 4px 12px rgba(31,36,33,.3);position:relative;z-index:2}
+  .hopt.pur{color:#4E3490}
+  .hnote{text-align:center;font-size:12px;font-weight:700;color:var(--soft);padding-top:8px}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
@@ -290,7 +308,7 @@
       <div class="under"><button class="linkbtn" data-act="manual">Add an entry by hand</button></div>
     </div>
 
-    <div class="sechead" style="margin-top:20px"><h2>Today</h2><span class="hint">Tap a tile to update</span></div>
+    <div class="sechead" style="margin-top:20px"><h2>Today</h2><span class="hint">Tap to log, hold for more</span></div>
     <div id="todayFacts"></div>
 
     <div class="queue" id="queue" hidden></div>
@@ -326,7 +344,8 @@
 <!-- CONFIRM / EDIT SHEET -->
 <div class="sheet" id="confirm" role="dialog" aria-modal="true" aria-labelledby="cTitle">
   <div class="inner">
-    <div class="sheethead"><h2 id="cTitle">Look right?</h2><button class="x" data-act="close" aria-label="Close">&times;</button></div>
+    <div class="sheethead"><button class="x" data-act="close" aria-label="Close">&times;</button><h2 id="cTitle">Look right?</h2>
+      <button class="deltop" id="cDeleteTop" data-act="deleteentry" hidden>Delete</button><button class="savetop" id="cSaveTop" data-act="savecards">Save</button></div>
     <p class="hint" id="cHint">Fix anything that landed wrong, then save.</p>
     <div class="said" id="cSaid" hidden></div>
     <div id="cards"></div>
@@ -340,10 +359,8 @@
 <div class="sheet" id="quick" role="dialog" aria-modal="true" aria-labelledby="qTitle">
   <div class="inner">
     <div class="grab"></div>
-    <div class="qhead"><span class="ic" id="qIcon"></span><h2 id="qTitle"></h2><button class="x" data-act="qcancel" aria-label="Cancel">&times;</button></div>
+    <div class="qhead"><button class="x" data-act="qcancel" aria-label="Close">&times;</button><span class="ic" id="qIcon"></span><h2 id="qTitle"></h2><button class="savetop" data-act="qsave" id="qSave">Save</button></div>
     <div class="qbody" id="qBody"></div>
-    <div class="logged" id="qLogged" hidden></div>
-    <button class="btn" data-act="qsave" id="qSave">Save</button>
     <div class="under" id="qMoreRow"><button class="qmore" data-act="qmore">More detail</button></div>
   </div>
 </div>
@@ -378,7 +395,7 @@
 "use strict";
 
 /* ---------- storage ---------- */
-var APP_VERSION = "1.5";
+var APP_VERSION = "1.6";
 var K_E = "daybook.entries.v1", K_S = "daybook.settings.v1", K_Q = "daybook.queue.v1", K_M = "daybook.models.v1";
 function load(k, d){ try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; }
@@ -404,7 +421,10 @@ function fmtHours(x){ if (x == null) return null; var h = Math.floor(x), m = Mat
 function longDate(s){ var p = s.split("-"); return new Date(+p[0], +p[1]-1, +p[2])
   .toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric" }); }
 var toastTimer;
-function toast(msg, ms){ var t = $("#toast"); t.textContent = msg; t.classList.add("show");
+function toast(msg, ms, act){ var t = $("#toast"); t.textContent = msg;
+  if (act) { var b = document.createElement("button"); b.type = "button"; b.textContent = act.label;
+    b.addEventListener("click", function(){ t.classList.remove("show"); act.fn(); }); t.appendChild(b); }
+  t.classList.add("show");
   clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, ms || 3200); }
 
 /* ---------- entry types ---------- */
@@ -739,6 +759,8 @@ function renderCards(){
   $("#cSave").textContent = pendingMode === "edit" ? "Save changes" : "Save " + n + (n === 1 ? " entry" : " entries");
   $("#cSave").disabled = !n;
   $("#cDelete").hidden = pendingMode !== "edit";
+  $("#cDeleteTop").hidden = pendingMode !== "edit";
+  $("#cSaveTop").disabled = !n;
 }
 function onCardInput(ev){
   var el = ev.target, i = el.dataset.i, f = el.dataset.f; if (i == null || !f) return;
@@ -1127,18 +1149,8 @@ function openQuick(key){
   var t = TINT[def.k] || TINT.note;
   $("#qIcon").style.background = t[0]; $("#qIcon").innerHTML = icon(def.k, 20);
   $("#qTitle").textContent = def.title;
-  var inst = !!def.instant;
-  $("#qSave").hidden = inst; $("#qMoreRow").hidden = inst; $("#qLogged").hidden = !inst;
-  if (inst) { Q.v.id = uid(); autoSave();
-    $("#qLogged").innerHTML = "<span>&#10003; Logged at " + fmtTime(hhmm(Q.v.time)) + ". Tap &times; to cancel it.</span>" +
-      '<button type="button" class="done" data-act="close">Done</button>'; }
-  renderQuick(); openSheet("#quick");
-}
-function autoSave(){
-  if (!Q || !QUICK[Q.key].instant || Q.removed) return;
-  var e = QUICK[Q.key].save(Q.v)[0], i = entries.findIndex(function(x){ return x.id === e.id; });
-  if (i >= 0) entries[i] = e; else entries.push(e);
-  store(K_E, entries); renderToday();
+  $("#qMoreRow").hidden = !!def.instant;
+  renderQuick(); openSheet("#quick"); $("#quick .inner").scrollTop = 0;
 }
 function renderQuick(){ $("#qBody").innerHTML = QUICK[Q.key].body(Q.v); quickOuts(); }
 function quickOuts(){ var o = QUICK[Q.key].outs(Q.v);
@@ -1151,8 +1163,7 @@ function saveQuick(){
 }
 $("#qBody").addEventListener("input", function(ev){ var el = ev.target;
   if (el.dataset.qset) { Q.v[el.dataset.qset] = +el.value; quickOuts(); }
-  if (el.dataset.qtext) Q.v[el.dataset.qtext] = el.value;
-  autoSave(); });
+  if (el.dataset.qtext) Q.v[el.dataset.qtext] = el.value; });
 $("#qBody").addEventListener("click", function(ev){
   var b = ev.target.closest("button"); if (!b) return;
   var d = b.dataset, v = Q.v;
@@ -1161,9 +1172,114 @@ $("#qBody").addEventListener("click", function(ev){
   else if (d.qstep) { v[d.qstep] = Math.max(0, (v[d.qstep] || 0) + +d.v); renderQuick(); }
   else if (d.qdr != null) { v.dr[+d.qdr] = Math.max(0, v.dr[+d.qdr] + +d.v); renderQuick(); }
   else return;
-  ev.stopPropagation(); autoSave();
+  ev.stopPropagation();
   var other = $("#qBody [data-qtext=other]"); if (other && (d.v === "Other")) other.focus();
 });
+
+/* ---------- one-tap logging, and hold-and-drag to pick ---------- */
+function addEntry(e, msg){
+  entries.push(e); store(K_E, entries); renderAll();
+  toast(msg, 5000, { label: "Undo", fn: function(){ entries = entries.filter(function(x){ return x.id !== e.id; }); store(K_E, entries); renderAll(); } });
+}
+function tapLog(key){
+  var n = new Date(), pee = key === "pee";
+  addEntry({ id: uid(), type: "bathroom", kind: pee ? "#1" : "#2", date: ymd(n), time: hm(n) }, "Logged " + (pee ? "#1" : "#2") + " at " + fmtTime(hm(n)));
+}
+function lastOfKind(kind){
+  var l = entries.filter(function(e){ return e.type === "workout" && String(e.kind || "").toLowerCase() === kind; })
+    .sort(function(a, b){ return dt(b) - dt(a); });
+  return l[0] || null;
+}
+function workoutOpts(){
+  var cutoff = Date.now() - 60 * 864e5, freq = {};
+  entries.forEach(function(e){ if (e.type === "workout" && e.kind && dt(e) > cutoff) { var k = String(e.kind).toLowerCase(); freq[k] = (freq[k] || 0) + 1; } });
+  var base = KINDS.filter(function(k){ return k !== "Other"; }).map(function(k){ return k.toLowerCase(); }), all = base.slice();
+  Object.keys(freq).forEach(function(k){ if (all.indexOf(k) < 0) all.push(k); });
+  all.sort(function(a, b){ return (freq[b] || 0) - (freq[a] || 0) || all.indexOf(a) - all.indexOf(b); });
+  return all.slice(0, 6).map(function(k){ var last = lastOfKind(k), mins = last && last.minutes ? last.minutes : 30, eff = last && last.intensity ? last.intensity : "easy";
+    return { html: cap(k), label: cap(k) + ", " + mins + " min, " + eff, v: { kind: k, minutes: mins, intensity: eff } }; });
+}
+var HOLD = {
+  pee: { cols: 8, title: "Slide to the color, let go to log",
+    opts: function(){ return URINE.map(function(u, i){ return { html: '<i style="background:' + u[0] + '"></i>', label: u[1] + ": " + u[2].split(",")[0].toLowerCase(), v: i + 1 }; }); },
+    log: function(o){ var n = new Date(); addEntry({ id: uid(), type: "bathroom", kind: "#1", date: ymd(n), time: hm(n), shade: o.v }, "Logged #1, " + URINE[o.v - 1][1].toLowerCase()); } },
+  poop: { cols: 7, title: "Slide to the type, let go to log",
+    opts: function(){ return BRISTOL.map(function(b, i){ return { html: "<b>" + b[0] + "</b>", label: b[0] + " " + b[1] + ": " + BRISTOLW[i + 1].toLowerCase(), v: i + 1 }; }); },
+    log: function(o){ var n = new Date(); addEntry({ id: uid(), type: "bathroom", kind: "#2", date: ymd(n), time: hm(n), bristol: o.v }, "Logged #2, type " + o.v); } },
+  workout: { cols: 3, title: "Slide to the workout, let go to log",
+    opts: workoutOpts,
+    log: function(o){ var n = new Date(), v = o.v;
+      addEntry({ id: uid(), type: "workout", date: ymd(n), time: hm(n), kind: v.kind, minutes: v.minutes, intensity: v.intensity }, "Logged " + cap(v.kind) + ", " + v.minutes + " min"); } },
+  sick: { cols: 5, title: "Slide to how you feel, let go to log",
+    opts: function(){ return SICK.map(function(x, i){ return { html: x, cls: "pur", label: i ? x + (i === 1 ? ": hot breath" : "") : "Healthy: clears today’s sick entry", v: i }; }); },
+    log: function(o){ var prev = todays("sick"), old = prev.map(function(x){ return Object.assign({}, x); }), n = new Date();
+      var keep = prev[0] || null, symp = keep && keep.symptoms ? keep.symptoms : (o.v === 1 ? "hot breath" : "");
+      entries = entries.filter(function(x){ return !(x.type === "sick" && x.date === ymd(n)); });
+      var id = keep ? keep.id : uid();
+      if (o.v > 0) entries.push({ id: id, type: "sick", date: ymd(n), time: hm(n), level: SICKLV[o.v - 1], symptoms: symp });
+      store(K_E, entries); renderAll();
+      toast(o.v ? "Sick: " + SICK[o.v].toLowerCase() : "Marked healthy", 5000, { label: "Undo", fn: function(){
+        entries = entries.filter(function(x){ return !(x.type === "sick" && x.date === ymd(n)); }).concat(old); store(K_E, entries); renderAll(); } }); } }
+};
+var hold = null, holdSuppress = 0;
+function holdTile(t){ var el = t && t.closest ? t.closest("[data-quick]") : null; return el && HOLD[el.dataset.quick] ? el : null; }
+function buzz(ms){ try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){} }
+function setHot(i){
+  if (!hold || hold.hot === i) return;
+  hold.hot = i;
+  document.querySelectorAll("#holdLayer .hopt").forEach(function(el){ el.classList.toggle("hot", +el.dataset.hi === i); });
+  var lab = $("#holdLayer .hlabel"); if (lab) lab.textContent = i >= 0 ? hold.opts[i].label : hold.def.title;
+  if (i >= 0) buzz(8);
+}
+function startHold(){
+  if (!hold) return;
+  hold.on = true; hold.def = HOLD[hold.key]; hold.opts = hold.def.opts(); hold.hot = -2;
+  hold.tile.classList.add("holding");
+  var layer = document.createElement("div"); layer.id = "holdLayer";
+  var w = Math.min(window.innerWidth - 24, 380), cols = hold.def.cols;
+  layer.innerHTML = '<div class="hpanel" style="width:' + w + 'px"><div class="hlabel"></div><div class="hopts" style="grid-template-columns:repeat(' + cols + ',minmax(0,1fr))">' +
+    hold.opts.map(function(o, i){ return '<div class="hopt ' + (o.cls || "") + '" data-hi="' + i + '">' + o.html + "</div>"; }).join("") +
+    '</div><div class="hnote">Let go on the tile for all the options</div></div>';
+  document.body.appendChild(layer);
+  var p = layer.firstChild, r = hold.tile.getBoundingClientRect(), h = p.offsetHeight;
+  var left = Math.max(12, Math.min(window.innerWidth - w - 12, r.left + r.width / 2 - w / 2)), top = r.top - h - 14;
+  if (top < 64) top = Math.min(window.innerHeight - h - 12, r.bottom + 14);
+  p.style.left = left + "px"; p.style.top = top + "px";
+  hold.cx = hold.x; hold.cy = hold.y;
+  setHot(-1); buzz(20);
+}
+function endHold(){
+  if (!hold) return;
+  clearTimeout(hold.timer); if (hold.tile) hold.tile.classList.remove("holding");
+  var l = $("#holdLayer"); if (l) l.remove();
+  hold = null;
+}
+document.addEventListener("pointerdown", function(ev){
+  if (ev.pointerType === "mouse" && ev.button !== 0) return;
+  if (hold) endHold();
+  var t = holdTile(ev.target); if (!t || document.querySelector(".sheet.open")) return;
+  hold = { key: t.dataset.quick, tile: t, x: ev.clientX, y: ev.clientY, id: ev.pointerId, on: false, hot: -1 };
+  hold.timer = setTimeout(startHold, 350);
+});
+document.addEventListener("pointermove", function(ev){
+  if (!hold || ev.pointerId !== hold.id) return;
+  if (!hold.on) { if (Math.hypot(ev.clientX - hold.x, ev.clientY - hold.y) > 10) endHold(); return; }
+  var el = document.elementFromPoint(ev.clientX, ev.clientY), o = el && el.closest ? el.closest(".hopt") : null;
+  setHot(o ? +o.dataset.hi : -1);
+});
+document.addEventListener("pointerup", function(ev){
+  if (!hold || ev.pointerId !== hold.id) return;
+  if (!hold.on) { endHold(); return; }                       // a plain tap: the click handler takes it
+  var h = hold, opt = h.hot >= 0 ? h.opts[h.hot] : null, r = h.tile.getBoundingClientRect();
+  var onTile = ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom;
+  holdSuppress = Date.now() + 700;
+  endHold();
+  if (opt) h.def.log(opt);
+  else if (onTile) openQuick(h.key);                         // held and let go in place: the full menu
+});
+document.addEventListener("pointercancel", function(){ endHold(); });
+document.addEventListener("touchmove", function(ev){ if (hold && hold.on) ev.preventDefault(); }, { passive: false });
+document.addEventListener("contextmenu", function(ev){ if (holdTile(ev.target)) ev.preventDefault(); });
 
 /* ---------- waiting-to-be-sorted queue ---------- */
 var sortingQueueId = null;
@@ -1182,7 +1298,8 @@ function renderQueue(){
     "<p>Oldest from " + esc(d.toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" }) + ", " + fmtTime(hm(d))) +
     ": “" + esc(first.text.length > 70 ? first.text.slice(0, 70) + "…" : first.text) + "”</p>" +
     '<div class="row"><button class="btn" data-act="sortq"' + (navigator.onLine === false || !settings.key ? " disabled" : "") + ">Sort now</button>" +
-    '<button class="btn ghost" data-act="handq">Enter by hand</button></div>';
+    '<button class="btn ghost" data-act="handq">Enter by hand</button>' +
+    '<button class="btn ghost danger" data-act="discardq" aria-label="Discard this note">Discard</button></div>';
 }
 function sortNext(){
   var item = queue[0]; if (!item) return;
@@ -1313,7 +1430,11 @@ $("#importFile").addEventListener("change", function(ev){
 /* ---------- clicks ---------- */
 document.addEventListener("click", function(ev){
   var el = ev.target.closest("button, .sheet"); if (!el) return;
-  if (el.dataset && el.dataset.quick) return openQuick(el.dataset.quick);
+  if (el.dataset && el.dataset.quick) {
+    if (Date.now() < holdSuppress) return;               // the click that follows a hold-and-drag
+    var qk = el.dataset.quick;
+    return QUICK[qk] && QUICK[qk].instant ? tapLog(qk) : openQuick(qk);
+  }
   if (el.classList.contains("sheet")) { if (ev.target === el) closeSheets(); return; }
   var d = el.dataset;
   if (d.tab) return showTab(d.tab);
@@ -1335,11 +1456,10 @@ document.addEventListener("click", function(ev){
     case "close": closeSheets(); sortingQueueId = null; break;
     case "sortq": sortNext(); break;
     case "qsave": saveQuick(); break;
-    case "qcancel": if (Q && QUICK[Q.key].instant && !Q.removed) { Q.removed = true;
-        entries = entries.filter(function(x){ return x.id !== Q.v.id; }); store(K_E, entries); closeSheets(); renderAll(); toast("Canceled"); }
-      else closeSheets(); break;
-    case "qundo": if (Q) { Q.removed = true; entries = entries.filter(function(x){ return x.id !== Q.v.id; }); store(K_E, entries); }
-      closeSheets(); renderAll(); toast("Removed"); break;
+    case "qcancel": closeSheets(); break;
+    case "discardq": { var dq = queue[0]; if (!dq) break;
+      if (confirm("Discard this note without logging it?\n\n“" + (dq.text.length > 120 ? dq.text.slice(0, 120) + "…" : dq.text) + "”")) {
+        dropQueued(dq.id); renderAll(); toast("Note discarded"); } } break;
     case "qmore": { var ql = QUICK[Q.key].save(JSON.parse(JSON.stringify(Q.v))); closeSheets();
       openConfirm(ql.length ? ql : [blank(QUICK[Q.key].k)], "", "new"); } break;
     case "handq": { var it = queue[0]; if (!it) break; var d0 = new Date(it.at);
@@ -1380,7 +1500,7 @@ window.addEventListener("online", function(){ renderQueue();
 window.addEventListener("offline", renderQueue);
 if ("serviceWorker" in navigator) window.addEventListener("load", function(){
   navigator.serviceWorker.register("sw.js").catch(function(){}); });
-if (!settings.key && !entries.length) setTimeout(function(){ toast("Start in Settings: paste a Gemini key.", 4500); }, 600);
+if (!settings.key && !entries.length) setTimeout(function(){ if (!entries.length) toast("Start in Settings: paste a Gemini key.", 4500); }, 600);
 })();
 </script>
 </body>
